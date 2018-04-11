@@ -13,7 +13,7 @@ import scala.util.{ Success, Try }
  * Created by Anastasia on 06.06.17.
  */
 case class AddPlayer(name: String, c: Controller) extends Command {
-
+//TODO: future??akka?? weil neuen Spieler anlegen dauert?
   override def action(): Try[_] = {
     val player = Player(name, 0)
     if (c.gameState == NONE || c.gameState == PREPARE) {
@@ -123,9 +123,6 @@ case class ChooseToken(tokenId: Int, c: Controller) extends Command {
 
 case class Play(c: Controller) extends Command {
   val dice = Dice()
-  //c.gui.players = c.players
-  //c.gui.repaint()
-  //println("alle payers..." + c.gui.players)
 
   override def action(): Try[_] = {
     //while (true)

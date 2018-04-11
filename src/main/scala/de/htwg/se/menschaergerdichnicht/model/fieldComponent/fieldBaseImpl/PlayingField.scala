@@ -44,6 +44,9 @@ case class PlayingField @Inject() () extends PlayingInterface {
 
   //TODO: kick token on start field, remove warnings
   //TODO: add akka...
+  // einzelne Aktoren durchsuchen die jeweiligen Player
+  // schicken "STOP" message wenn Token gefunden wurde
+  // beenden sich wenn keiner gefunden wurde -> auch nachricht
   def kickToken(tokenId: Int, player: PlayerInterface, players: PlayersInterface): Boolean = {
     for (p <- players.getAllPlayer) {
       for (token <- p.getTokens()) {
