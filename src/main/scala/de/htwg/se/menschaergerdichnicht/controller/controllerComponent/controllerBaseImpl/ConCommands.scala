@@ -73,7 +73,7 @@ case class NewGame(c: Controller) extends Command {
       c.players = c.players.removePlayer()
     }
     c.players.currentPlayer = 0
-    c.gameState = PREPARE
+    c.gameState = NONE
     c.tui.update
     c.publish(new PlayersChanged)
     Success()
@@ -83,28 +83,34 @@ case class NewGame(c: Controller) extends Command {
 
 case class ChooseToken(tokenId: Int, c: Controller) extends Command {
   val player = c.players.getCurrentPlayer
-  val token = player.getTokenById(tokenId)
+  val t = player.getTokenById(tokenId)
   val dice = Dice()
 
   override def action(): Try[_] = {
     println(c.players.getCurrentPlayer)
-
-    if (player.getDiced() == 6) {
-      if (token.counter == 0) {
-        c.playingField.moveToStart(token)
-        println("Moved Token" + tokenId + " to start")
-        player.setDiced(0)
-      } else {
-        c.playingField.moveToken(token, player.getDiced(), c.players)
-        println("Moved Token" + tokenId + " " + player.getDiced() + " fields")
-        player.setDiced(0)
+    println(t)
+    t match{
+      case Some(token) => {
+        if (player.getDiced() == 6) {
+          if (token.counter == 0) {
+            c.playingField.moveToStart(token)
+            println("Moved Token" + tokenId + " to start")
+            player.setDiced(0)
+          } else {
+            c.playingField.moveToken(token, player.getDiced(), c.players)
+            println("Moved Token" + tokenId + " " + player.getDiced() + " fields")
+            player.setDiced(0)
+          }
+        }else {
+          c.playingField.moveToken(token, player.getDiced(), c.players)
+          println("Moved Token" + tokenId + " " + player.getDiced() + " fields")
+          player.setDiced(0)
+          c.players = c.players.nextPlayer()
+        }
       }
-    } else {
-      c.playingField.moveToken(token, player.getDiced(), c.players)
-      println("Moved Token" + tokenId + " " + player.getDiced() + " fields")
-      player.setDiced(0)
-      c.players = c.players.nextPlayer()
+      case None => println("errooooor")
     }
+
     c.gameState = ONGOING
     c.tui.update
     c.publish(new PlayersChanged)

@@ -30,8 +30,6 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
 
   def getFinished(): Boolean = finished
 
-  //this.setName(name)
-
   def setName(name: String) { this.name = name }
 
   def getName(): String = name
@@ -49,22 +47,14 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
     tokens
   }
 
-  def getFreeHouse(): FieldInterface = {
-    for (h <- house.house) {
-      if (h.tokenId == -1) {
-        return h
-      }
-    }
-    null
-  }
-
-  def getTokenById(tokenId: Int): TokenInterface = {
+  def getTokenById(tokenId: Int): Option[TokenInterface] = {
+    var t:Option[TokenInterface] = None
     for (token <- getTokens()) {
       if (token.tokenId == tokenId) {
-        return token
+        t = Some(token)
       }
     }
-    null
+    t
   }
 
   def getAvailableTokens(): ArrayBuffer[String] = {
@@ -90,7 +80,7 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
 object Player {
   private var idNumber = 0
   private def newIdNum = {
-    idNumber += 1;
+    idNumber += 1
     idNumber
   }
 }
