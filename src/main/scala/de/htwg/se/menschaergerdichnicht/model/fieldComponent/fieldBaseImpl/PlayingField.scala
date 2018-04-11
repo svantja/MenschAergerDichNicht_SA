@@ -42,6 +42,8 @@ case class PlayingField @Inject() () extends PlayingInterface {
     token.setCounter(token.getCounter() + num)
   }
 
+  //TODO: kick token on start field, remove warnings
+  //TODO: add akka...
   def kickToken(tokenId: Int, player: PlayerInterface, players: PlayersInterface): Boolean = {
     for (p <- players.getAllPlayer) {
       for (token <- p.getTokens()) {

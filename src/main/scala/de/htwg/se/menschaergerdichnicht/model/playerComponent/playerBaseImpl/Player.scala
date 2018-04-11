@@ -1,9 +1,7 @@
 package de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl
 
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.{ House, TargetField }
-import de.htwg.se.menschaergerdichnicht.model.fieldComponent.FieldInterface
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.{ PlayerInterface, PlayersInterface, TokenInterface }
-import play.api.libs.json.{ JsNumber, JsValue, Json }
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -13,8 +11,6 @@ import scala.collection.mutable.ArrayBuffer
 case class Player(var name: String, var diced: Int) extends PlayerInterface {
 
   var playerId = Player.newIdNum
-
-  //var diced = 0
 
   val house = House(this)
 

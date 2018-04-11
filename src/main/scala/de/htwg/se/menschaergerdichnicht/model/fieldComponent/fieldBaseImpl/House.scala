@@ -16,12 +16,13 @@ case class House(player: PlayerInterface) extends HouseInterface {
   }
 
   def isFull(player: PlayerInterface): Boolean = {
+    var bool: Boolean = true
     for (field <- player.house.house) {
       if (field.tokenId == -1) {
-        return false
+        bool = false
       }
     }
-    true
+    bool
   }
 
 }

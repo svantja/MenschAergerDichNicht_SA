@@ -11,8 +11,6 @@ import com.typesafe.scalalogging.LazyLogging
  */
 class Tui(controller: ControllerInterface) extends Observer with LazyLogging {
 
-  //controller.add(this)
-
   val DEFAULT_TOKEN = 17
 
   private val NEWLINE = System.getProperty("line.separator")
