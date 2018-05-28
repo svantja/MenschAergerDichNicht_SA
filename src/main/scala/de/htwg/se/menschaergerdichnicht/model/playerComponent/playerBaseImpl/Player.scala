@@ -49,11 +49,7 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
 
   def getTokenById(tokenId: Int): Option[TokenInterface] = {
     var t:Option[TokenInterface] = None
-    for (token <- getTokens()) {
-      if (token.tokenId == tokenId) {
-        t = Some(token)
-      }
-    }
+    getTokens().map(token => if(token.tokenId == tokenId) t = Some(token))
     t
   }
 
@@ -103,13 +99,7 @@ case class Players(var currentPlayer: Int = 0, players: Vector[PlayerInterface] 
 
   override def toString: String = {
     var nameList = ""
-    for (player <- players) {
-      if (player == players(currentPlayer)) {
-        nameList += "Current > " + player.toString() + "\n"
-      } else {
-        nameList += "  " + player.toString() + "\n"
-      }
-    }
+    players.map(player => if(player == players(currentPlayer)) nameList += "Current > " + player.toString() + "\n" else nameList += "  " + player.toString() + "\n")
     nameList
   }
 
