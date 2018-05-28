@@ -6,7 +6,14 @@
 Mensch Aerger Dich Nicht
 =========================
 
-This is scala project for the class Software Engineering at the University of Applied Science HTWG Konstanz
+This is the scala project for the class Software Architecture (an extension of the previos project for the class Software Engineering) at the University of Applied Science HTWG Konstanz
+
+## Docker
+
+How to create image:
+* docker build -t NAMEOFIMAGE GIT-REPO
+   * docker build -t menschaergerdichnicht_sa github.com/svantja/menschaergerdichnicht_sa
+* docker run -p 8080:8080 -ti --rm menschaergerdichnicht_sa
 
 ## Goals of project
 
