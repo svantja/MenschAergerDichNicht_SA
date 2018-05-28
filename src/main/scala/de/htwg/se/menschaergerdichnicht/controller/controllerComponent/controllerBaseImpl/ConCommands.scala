@@ -93,7 +93,7 @@ case class ChooseToken(tokenId: Int, c: Controller) extends Command {
       case Some(token) => {
         if (player.getDiced() == 6) {
           if (token.counter == 0) {
-            c.playingField.moveToStart(token)
+            c.playingField.moveToStart(token, c.players)
             println("Moved Token" + tokenId + " to start")
             player.setDiced(0)
           } else {
