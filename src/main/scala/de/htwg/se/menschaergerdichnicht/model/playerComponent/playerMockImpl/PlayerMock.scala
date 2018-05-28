@@ -23,8 +23,7 @@ case class PlayerMock() extends PlayerInterface {
   def setDiced(diced: Int) = 3
   def getDiced(): Int = 3
   def addTokens(): ArrayBuffer[TokenInterface] = ArrayBuffer()
-  def getFreeHouse(): Field = Field()
-  def getTokenById(tokenId: Int): Token = Token(Player("Birgit", 3), (Field(), 1), 1)
+  def getTokenById(tokenId: Int): Option[Token] = Option(Token(Player("Birgit", 3), (Field(), 1), 1))
   def getAvailableTokens(): ArrayBuffer[String] = ArrayBuffer()
 }
 

@@ -23,8 +23,7 @@ trait PlayerInterface {
   def setDiced(diced: Int)
   def getDiced(): Int
   def addTokens(): ArrayBuffer[TokenInterface]
-  def getFreeHouse(): FieldInterface
-  def getTokenById(tokenId: Int): TokenInterface
+  def getTokenById(tokenId: Int): Option[TokenInterface]
   def getAvailableTokens(): ArrayBuffer[String]
 }
 

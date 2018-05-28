@@ -38,12 +38,10 @@ case class Token(var player: PlayerInterface, var position: (FieldInterface, Int
 object Token {
 
   private var idNumber = 0
-  private var round = 0
-  private var index = 0
   val colorList = List("red", "blue", "green", "yellow")
 
   private def newIdNum = {
-    idNumber += 1;
+    idNumber += 1
     idNumber
   }
   private def setNumber = {
@@ -52,7 +50,7 @@ object Token {
 
   private def setColor = {
     if (idNumber <= 4) {
-      colorList(0)
+      colorList.head
     } else if (idNumber <= 8 && idNumber >= 5) {
       colorList(1)
     } else if (idNumber <= 12 && idNumber >= 9) {

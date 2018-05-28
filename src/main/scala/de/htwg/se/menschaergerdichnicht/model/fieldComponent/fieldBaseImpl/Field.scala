@@ -15,6 +15,6 @@ case class Field() extends FieldInterface {
 
   def getToken(): Int = tokenId
 
-  def removeToken() { this.tokenId = -1 }
+  def removeToken(): Unit = { this.tokenId = -1 }
 
 }

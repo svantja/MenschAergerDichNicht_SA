@@ -3,11 +3,8 @@ package de.htwg.se.menschaergerdichnicht
 import com.google.inject.Guice
 import de.htwg.se.menschaergerdichnicht.aview.tui.Tui
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.ControllerInterface
-import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.controllerBaseImpl.Controller
-import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.Dice
-import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.Player
+import de.htwg.se.menschaergerdichnicht.aview.HttpServer
 
-import scala.collection.mutable.Map
 import scala.io.StdIn.readLine
 
 // should try idea ultimate for worksheets
@@ -15,10 +12,13 @@ import scala.io.StdIn.readLine
 // fuer einfache testfaelle
 
 object Game {
-
+  //TODO: neuer thread
+  // t1: player: a, b
+  // t2: player f, g
   val injector = Guice.createInjector(new MenschAergerDichNichtModule)
   val controller = injector.getInstance(classOf[ControllerInterface])
   val tui = controller.tui
+  val wui = new HttpServer(controller, tui)
 
 
   def main(args: Array[String]): Unit = {

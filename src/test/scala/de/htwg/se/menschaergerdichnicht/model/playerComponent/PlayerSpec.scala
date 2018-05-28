@@ -61,14 +61,6 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.addTokens()
   }
 
-  "A Player" should "get free house" in {
-    player.getFreeHouse()
-  }
-  it should "return the field without token" in {
-    player.house.house(0).removeToken()
-    player.getFreeHouse()
-  }
-
   "A Player" should "get token by id" in {
     player.getTokenById(1)
   }

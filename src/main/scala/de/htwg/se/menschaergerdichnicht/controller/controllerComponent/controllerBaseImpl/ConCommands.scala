@@ -13,7 +13,7 @@ import scala.util.{ Success, Try }
  * Created by Anastasia on 06.06.17.
  */
 case class AddPlayer(name: String, c: Controller) extends Command {
-
+//TODO: future??akka?? weil neuen Spieler anlegen dauert?
   override def action(): Try[_] = {
     val player = Player(name, 0)
     if (c.gameState == NONE || c.gameState == PREPARE) {
@@ -73,7 +73,7 @@ case class NewGame(c: Controller) extends Command {
       c.players = c.players.removePlayer()
     }
     c.players.currentPlayer = 0
-    c.gameState = PREPARE
+    c.gameState = NONE
     c.tui.update
     c.publish(new PlayersChanged)
     Success()
@@ -83,28 +83,34 @@ case class NewGame(c: Controller) extends Command {
 
 case class ChooseToken(tokenId: Int, c: Controller) extends Command {
   val player = c.players.getCurrentPlayer
-  val token = player.getTokenById(tokenId)
+  val t = player.getTokenById(tokenId)
   val dice = Dice()
 
   override def action(): Try[_] = {
     println(c.players.getCurrentPlayer)
-
-    if (player.getDiced() == 6) {
-      if (token.counter == 0) {
-        c.playingField.moveToStart(token)
-        println("Moved Token" + tokenId + " to start")
-        player.setDiced(0)
-      } else {
-        c.playingField.moveToken(token, player.getDiced(), c.players)
-        println("Moved Token" + tokenId + " " + player.getDiced() + " fields")
-        player.setDiced(0)
+    println(t)
+    t match{
+      case Some(token) => {
+        if (player.getDiced() == 6) {
+          if (token.counter == 0) {
+            c.playingField.moveToStart(token, c.players)
+            println("Moved Token" + tokenId + " to start")
+            player.setDiced(0)
+          } else {
+            c.playingField.moveToken(token, player.getDiced(), c.players)
+            println("Moved Token" + tokenId + " " + player.getDiced() + " fields")
+            player.setDiced(0)
+          }
+        }else {
+          c.playingField.moveToken(token, player.getDiced(), c.players)
+          println("Moved Token" + tokenId + " " + player.getDiced() + " fields")
+          player.setDiced(0)
+          c.players = c.players.nextPlayer()
+        }
       }
-    } else {
-      c.playingField.moveToken(token, player.getDiced(), c.players)
-      println("Moved Token" + tokenId + " " + player.getDiced() + " fields")
-      player.setDiced(0)
-      c.players = c.players.nextPlayer()
+      case None => println("errooooor")
     }
+
     c.gameState = ONGOING
     c.tui.update
     c.publish(new PlayersChanged)
@@ -117,51 +123,37 @@ case class ChooseToken(tokenId: Int, c: Controller) extends Command {
 
 case class Play(c: Controller) extends Command {
   val dice = Dice()
-  //c.gui.players = c.players
-  //c.gui.repaint()
-  //println("alle payers..." + c.gui.players)
 
   override def action(): Try[_] = {
     //while (true)
     if(c.gameState == PREPARE){
       c.gameState = ONGOING
-    }else if (c.gameState != DICED) {
+    }else if (c.gameState != DICED || c.gameState != SELECT) {
       c.gameState == ONGOING
       val player = c.players.getCurrentPlayer
       if (!player.getFinished()) {
         val num = dice.rollDice(c.players.getCurrentPlayer)
         if (num == 0) {
           player.setDiced(num)
-          println("Cannot move, next player.")
           c.players = c.players.nextPlayer()
           println(c.players.getCurrentPlayer)
-          c.gameState == ONGOING
-
+          c.gameState == SELECT
         } else {
           if (player.house.isFull(player)) {
             player.setDiced(num)
-            println("Choose token to move")
-            println(num + "diced" + player.getDiced())
-            println("avaiable tokens: " + player.getAvailableTokens())
-            c.gameState = DICED
+            c.gameState = SELECT
           } else {
             player.setDiced(num)
 
             if (num == 6) {
-              println("Choose token to move")
-              println(num + "diced" + player.getDiced())
-              println("avaiable tokens: " + player.getAvailableTokens())
-              c.gameState = DICED
+              c.gameState = SELECT
             } else {
               if (player.getAvailableTokens().length == 0) {
                 println("Cannot move, must dice a 6")
                 c.gameState = ONGOING
                 c.players = c.players.nextPlayer()
               } else {
-                println("Choose token to move")
-                println(num + "diced" + player.getDiced())
-                println("avaiable tokens: " + player.getAvailableTokens())
-                c.gameState = DICED
+                c.gameState = SELECT
               }
             }
           }

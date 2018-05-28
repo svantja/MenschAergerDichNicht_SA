@@ -1,13 +1,13 @@
 package de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl
 
+import akka.actor.{Actor, ActorSystem, Props}
 import javax.inject.Inject
-
-import de.htwg.se.menschaergerdichnicht.model.fieldComponent.{ FieldInterface, PlayingInterface }
-import de.htwg.se.menschaergerdichnicht.model.playerComponent.{ PlayerInterface, PlayersInterface, TokenInterface }
+import de.htwg.se.menschaergerdichnicht.model.fieldComponent.{FieldInterface, PlayingInterface}
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.{PlayerInterface, PlayersInterface, TokenInterface}
 
 import scala.collection.mutable.ArrayBuffer
 
-case class PlayingField @Inject() () extends PlayingInterface {
+case class PlayingField @Inject()() extends PlayingInterface {
 
   val playingField = new ArrayBuffer[FieldInterface]
 
@@ -42,40 +42,76 @@ case class PlayingField @Inject() () extends PlayingInterface {
     token.setCounter(token.getCounter() + num)
   }
 
-  def kickToken(tokenId: Int, player: PlayerInterface, players: PlayersInterface): Boolean = {
-    for (p <- players.getAllPlayer) {
-      for (token <- p.getTokens()) {
-        if (token.tokenId == tokenId) {
-          if (token.getPlayer() != player) {
-            val player = token.getPlayer()
-            if (tokenId > 4 && tokenId <= 8) {
-              val free = player.house.house(tokenId - 5)
-              free.setToken(token)
-              token.setPosition((free, tokenId - 5))
-              token.setCounter(0)
-            } else if (tokenId > 8 && tokenId <= 12) {
-              val free = player.house.house(tokenId - 9)
-              free.setToken(token)
-              token.setPosition((free, tokenId - 9))
-              token.setCounter(0)
-            } else if (tokenId > 12 && tokenId <= 16) {
-              val free = player.house.house(tokenId - 13)
-              free.setToken(token)
-              token.setPosition((free, tokenId - 13))
-              token.setCounter(0)
-            } else if (tokenId >= 0 && tokenId <= 4) {
-              val free = player.house.house(tokenId - 1)
-              free.setToken(token)
-              token.setPosition((free, tokenId - 1))
-              token.setCounter(0)
-            }
-            return true
-          }
-        }
+
+  //TODO: einzige Problem: was passiert wenn man sich selber kicken will?
+  class KickActor(token: TokenInterface, tokenId: Int, player: PlayerInterface) extends Actor {
+    def receive: PartialFunction[Any, Unit] = {
+      case "player one" => {
+        val player = token.getPlayer()
+        val free = player.house.house(tokenId - 1)
+        free.setToken(token)
+        token.setPosition((free, tokenId - 1))
+        token.setCounter(0)
+      }
+      case "player two" => {
+        val player = token.getPlayer()
+        val free = player.house.house(tokenId - 5)
+        free.setToken(token)
+        token.setPosition((free, tokenId - 5))
+        token.setCounter(0)
+      }
+      case "player three" => {
+        val player = token.getPlayer()
+        val free = player.house.house(tokenId - 9)
+        free.setToken(token)
+        token.setPosition((free, tokenId - 9))
+        token.setCounter(0)
+      }
+      case "player four" => {
+        val player = token.getPlayer()
+        val free = player.house.house(tokenId - 13)
+        free.setToken(token)
+        token.setPosition((free, tokenId - 13))
+        token.setCounter(0)
       }
     }
-    return false
   }
+
+  class TokenActor(token: TokenInterface, tokenId: Int, player: PlayerInterface) extends Actor {
+    def receive: PartialFunction[Any, Unit] = {
+      case "kick" => {
+        val system = ActorSystem("KickTokenSystem")
+        val helloActor = system.actorOf(Props(new KickActor(token, tokenId, player)), name = token.number.toString)
+        if (tokenId <= 4) {
+          helloActor ! "player one"
+        } else if (tokenId > 4 && tokenId <= 8) {
+          helloActor ! "player two"
+        } else if (tokenId > 8 && tokenId <= 12) {
+          helloActor ! "player three"
+        } else if (tokenId > 4 && tokenId <= 8) {
+          helloActor ! "player four"
+        }
+      }
+
+    }
+  }
+
+  case class PlayerActor(p: PlayerInterface, tokenId: Int, player: PlayerInterface) extends Actor {
+    def receive: PartialFunction[Any, Unit] = {
+      case "kick" => {
+        val system = ActorSystem("KickTokenSystem")
+        p.getTokens().map(token =>
+          (if (token.tokenId == tokenId && token.getPlayer() != player) (system.actorOf(Props(new TokenActor(token, tokenId, player)), name = token.number.toString)) ! "kick"))
+      }
+    }
+  }
+
+  def kickToken(tokenId: Int, player: PlayerInterface, players: PlayersInterface): Boolean = {
+    val system = ActorSystem("KickTokenSystem")
+    players.getAllPlayer.map(p => (system.actorOf(Props(new PlayerActor(p, tokenId, player)), name = p.getName())) ! "kick")
+    true
+  }
+
 
   def moveToTarget(token: TokenInterface, i: Int): Unit = {
     val player = token.getPlayer()
@@ -97,19 +133,36 @@ case class PlayingField @Inject() () extends PlayingInterface {
     }
   }
 
-  def moveToStart(token: TokenInterface): Unit = {
+  def moveToStart(token: TokenInterface, players: PlayersInterface): Unit = {
     token.position._1.tokenId = -1
+
+    var newPosition = 0
+
     token.getPlayer().playerId match {
       case 1 =>
-        token.setPosition(playingField(0), 0); token.setCounter(1); playingField(0).setToken(token)
+        newPosition = 0
       case 2 =>
-        token.setPosition(playingField(10), 10); token.setCounter(1); playingField(10).setToken(token)
+        newPosition += 10
       case 3 =>
-        token.setPosition(playingField(20), 20); token.setCounter(1); playingField(20).setToken(token)
+        newPosition += 20
       case 4 =>
-        token.setPosition(playingField(30), 30); token.setCounter(1); playingField(30).setToken(token)
+        newPosition += 30
       case _ => token.position._1.tokenId = token.tokenId
     }
+
+    if (playingField(newPosition).tokenId == -1) {
+      token.setPosition((playingField(newPosition), newPosition))
+      token.setCounter(1)
+      playingField(newPosition).setToken(token)
+    } else {
+      val toBeKicked = playingField(newPosition).tokenId
+      if (kickToken(toBeKicked, token.getPlayer(), players)) {
+        token.setPosition((playingField(newPosition), newPosition))
+        token.setCounter(1)
+        playingField(newPosition).setToken(token)
+      }
+    }
   }
+
 }
 

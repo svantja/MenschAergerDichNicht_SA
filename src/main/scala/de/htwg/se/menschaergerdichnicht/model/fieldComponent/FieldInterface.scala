@@ -25,7 +25,7 @@ trait PlayingInterface {
   def moveToken(token: TokenInterface, num: Int, players: PlayersInterface): Unit
   def kickToken(tokenId: Int, player: PlayerInterface, players: PlayersInterface): Boolean
   def moveToTarget(token: TokenInterface, i: Int): Unit
-  def moveToStart(token: TokenInterface): Unit
+  def moveToStart(token: TokenInterface, players: PlayersInterface): Unit
 }
 
 trait TargetInterface {

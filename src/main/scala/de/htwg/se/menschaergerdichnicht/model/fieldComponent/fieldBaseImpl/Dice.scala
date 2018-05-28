@@ -7,21 +7,21 @@ import de.htwg.se.menschaergerdichnicht.model.playerComponent.PlayerInterface
 case class Dice() {
   var dice: Int = 0
   def rollDice(player: PlayerInterface): Int = {
-    val r = scala.util.Random
+    var value: Int = 0
+    val start = 1
+    val end   = 6
+    val r = new scala.util.Random
+    start + r.nextInt( (end - start) + 1 )
     if (player.house.isFull(player)) {
-      for (i <- 1 to 3) {
-        do {
-          dice = r.nextInt(7)
-        } while (dice == 0)
-
-        if (dice == 6) { return dice }
+      for (i <- 1 to 3 if dice != 6){
+        value = start + r.nextInt( (end - start) + 1 )
+        if(value == 6) {
+          dice = value
+        }
       }
-    } else {
-      do {
-        dice = r.nextInt(7)
-      } while (dice == 0)
-      return dice
+    }else {
+      dice = start + r.nextInt( (end - start) + 1 )
     }
-    0
+    dice
   }
 }

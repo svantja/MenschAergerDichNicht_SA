@@ -36,6 +36,6 @@ class PlayingFieldSpec extends FlatSpec with Matchers {
   }
 
   "A PlayingField" should "move to start" in {
-    playingField.moveToStart(player.tokens(0))
+    playingField.moveToStart(player.tokens(0), players)
   }
 }

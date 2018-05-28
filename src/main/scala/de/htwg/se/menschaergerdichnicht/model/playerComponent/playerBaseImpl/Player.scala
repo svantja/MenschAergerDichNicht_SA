@@ -1,20 +1,20 @@
 package de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl
 
-import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.{ House, TargetField }
+import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.{House, TargetField}
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.FieldInterface
-import de.htwg.se.menschaergerdichnicht.model.playerComponent.{ PlayerInterface, PlayersInterface, TokenInterface }
-import play.api.libs.json.{ JsNumber, JsValue, Json }
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.{PlayerInterface, PlayersInterface, TokenInterface}
+import play.api.libs.json.{JsNumber, JsValue, Json}
 
 import scala.collection.mutable.ArrayBuffer
-
+import scala.concurrent.{Await, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 /**
  * Created by Anastasia on 29.04.17.
  */
 case class Player(var name: String, var diced: Int) extends PlayerInterface {
 
   var playerId = Player.newIdNum
-
-  //var diced = 0
 
   val house = House(this)
 
@@ -29,8 +29,6 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
   def setFinished(finished: Boolean) { this.finished = finished }
 
   def getFinished(): Boolean = finished
-
-  //this.setName(name)
 
   def setName(name: String) { this.name = name }
 
@@ -49,38 +47,19 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
     tokens
   }
 
-  def getFreeHouse(): FieldInterface = {
-    for (h <- house.house) {
-      if (h.tokenId == -1) {
-        return h
-      }
-    }
-    null
+  def getTokenById(tokenId: Int): Option[TokenInterface] = {
+    var t:Option[TokenInterface] = None
+    getTokens().map(token => if(token.tokenId == tokenId) t = Some(token))
+    t
   }
 
-  def getTokenById(tokenId: Int): TokenInterface = {
-    for (token <- getTokens()) {
-      if (token.tokenId == tokenId) {
-        return token
-      }
-    }
-    null
-  }
-
+  //Future
   def getAvailableTokens(): ArrayBuffer[String] = {
-    val tokens = new ArrayBuffer[String]
-    for (token <- getTokens()) {
-      if (!token.getFinished()) {
-        if (diced == 6) {
-          tokens += "Token " + token.tokenId
-        } else {
-          if (token.getCounter() > 0) {
-            tokens += "Token " + token.tokenId
-          }
-        }
-      }
-    }
-    tokens
+    val tokens = getTokens()
+    val listTokens = tokens.map(token => Future(if(!token.getFinished() && (diced == 6 || token.getCounter() > 0)) Some("Token " + token.tokenId) else None))
+    val t = Future.sequence(listTokens).map(_.flatten.distinct.toList)
+    val b = Await.result(t, 500 millis)
+    ArrayBuffer(b : _*)
   }
 
   override def toString: String = name
@@ -90,7 +69,7 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
 object Player {
   private var idNumber = 0
   private def newIdNum = {
-    idNumber += 1;
+    idNumber += 1
     idNumber
   }
 }
@@ -120,13 +99,7 @@ case class Players(var currentPlayer: Int = 0, players: Vector[PlayerInterface] 
 
   override def toString: String = {
     var nameList = ""
-    for (player <- players) {
-      if (player == players(currentPlayer)) {
-        nameList += "Current > " + player.toString() + "\n"
-      } else {
-        nameList += "  " + player.toString() + "\n"
-      }
-    }
+    players.map(player => if(player == players(currentPlayer)) nameList += "Current > " + player.toString() + "\n" else nameList += "  " + player.toString() + "\n")
     nameList
   }
 
