@@ -128,43 +128,32 @@ case class Play(c: Controller) extends Command {
     //while (true)
     if(c.gameState == PREPARE){
       c.gameState = ONGOING
-    }else if (c.gameState != DICED) {
+    }else if (c.gameState != DICED || c.gameState != SELECT) {
       c.gameState == ONGOING
       val player = c.players.getCurrentPlayer
       if (!player.getFinished()) {
         val num = dice.rollDice(c.players.getCurrentPlayer)
         if (num == 0) {
           player.setDiced(num)
-          println("Cannot move, next player.")
           c.players = c.players.nextPlayer()
           println(c.players.getCurrentPlayer)
-          c.gameState == ONGOING
-
+          c.gameState == SELECT
         } else {
           if (player.house.isFull(player)) {
             player.setDiced(num)
-            println("Choose token to move")
-            println(num + "diced" + player.getDiced())
-            println("avaiable tokens: " + player.getAvailableTokens())
-            c.gameState = DICED
+            c.gameState = SELECT
           } else {
             player.setDiced(num)
 
             if (num == 6) {
-              println("Choose token to move")
-              println(num + "diced" + player.getDiced())
-              println("avaiable tokens: " + player.getAvailableTokens())
-              c.gameState = DICED
+              c.gameState = SELECT
             } else {
               if (player.getAvailableTokens().length == 0) {
                 println("Cannot move, must dice a 6")
                 c.gameState = ONGOING
                 c.players = c.players.nextPlayer()
               } else {
-                println("Choose token to move")
-                println(num + "diced" + player.getDiced())
-                println("avaiable tokens: " + player.getAvailableTokens())
-                c.gameState = DICED
+                c.gameState = SELECT
               }
             }
           }
