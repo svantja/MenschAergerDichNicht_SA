@@ -7,7 +7,7 @@ import de.htwg.se.menschaergerdichnicht.model.playerComponent.{PlayerInterface, 
 
 import scala.collection.mutable.ArrayBuffer
 
-case class PlayingField @Inject() () extends PlayingInterface {
+case class PlayingField @Inject()() extends PlayingInterface {
 
   val playingField = new ArrayBuffer[FieldInterface]
 
@@ -78,47 +78,39 @@ case class PlayingField @Inject() () extends PlayingInterface {
   }
 
   class TokenActor(token: TokenInterface, tokenId: Int, player: PlayerInterface) extends Actor {
-    def receive: PartialFunction[Any, Unit] =  {
+    def receive: PartialFunction[Any, Unit] = {
       case "kick" => {
         val system = ActorSystem("KickTokenSystem")
         val helloActor = system.actorOf(Props(new KickActor(token, tokenId, player)), name = token.number.toString)
-        if(tokenId <= 4){
-        helloActor ! "player one"
-      }else if (tokenId > 4 && tokenId <= 8){
-        helloActor ! "player two"
-      }else if (tokenId > 8 && tokenId <= 12){
-        helloActor ! "player three"
-      }else if (tokenId > 4 && tokenId <= 8){
-        helloActor ! "player four"
-      }}
+        if (tokenId <= 4) {
+          helloActor ! "player one"
+        } else if (tokenId > 4 && tokenId <= 8) {
+          helloActor ! "player two"
+        } else if (tokenId > 8 && tokenId <= 12) {
+          helloActor ! "player three"
+        } else if (tokenId > 4 && tokenId <= 8) {
+          helloActor ! "player four"
+        }
+      }
 
     }
   }
+
   case class PlayerActor(p: PlayerInterface, tokenId: Int, player: PlayerInterface) extends Actor {
     def receive: PartialFunction[Any, Unit] = {
       case "kick" => {
         val system = ActorSystem("KickTokenSystem")
-        for (token <- p.getTokens()) {
-          val helloActor = system.actorOf(Props(new TokenActor(token, tokenId, player)), name = token.number.toString)
-          if (token.tokenId == tokenId) {
-            if (token.getPlayer() != player) {
-              helloActor ! "kick"
-            }
-          }
-        }
+        p.getTokens().map(token =>
+          (if (token.tokenId == tokenId && token.getPlayer() != player) (system.actorOf(Props(new TokenActor(token, tokenId, player)), name = token.number.toString)) ! "kick"))
       }
     }
   }
 
   def kickToken(tokenId: Int, player: PlayerInterface, players: PlayersInterface): Boolean = {
     val system = ActorSystem("KickTokenSystem")
-    for (p <- players.getAllPlayer) {
-      val helloActor = system.actorOf(Props(new PlayerActor(p, tokenId, player)), name = p.getName())
-      helloActor ! "kick"
-    }
+    players.getAllPlayer.map(p => (system.actorOf(Props(new PlayerActor(p, tokenId, player)), name = p.getName())) ! "kick")
     true
   }
-
 
 
   def moveToTarget(token: TokenInterface, i: Int): Unit = {
@@ -158,18 +150,18 @@ case class PlayingField @Inject() () extends PlayingInterface {
       case _ => token.position._1.tokenId = token.tokenId
     }
 
-      if (playingField(newPosition).tokenId == -1) {
+    if (playingField(newPosition).tokenId == -1) {
+      token.setPosition((playingField(newPosition), newPosition))
+      token.setCounter(1)
+      playingField(newPosition).setToken(token)
+    } else {
+      val toBeKicked = playingField(newPosition).tokenId
+      if (kickToken(toBeKicked, token.getPlayer(), players)) {
         token.setPosition((playingField(newPosition), newPosition))
         token.setCounter(1)
         playingField(newPosition).setToken(token)
-      } else {
-        val toBeKicked = playingField(newPosition).tokenId
-        if (kickToken(toBeKicked, token.getPlayer(), players)) {
-          token.setPosition((playingField(newPosition), newPosition))
-          token.setCounter(1)
-          playingField(newPosition).setToken(token)
-        }
       }
+    }
   }
 
 }
