@@ -1,10 +1,14 @@
 package de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl
 
-import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.{ House, TargetField }
-import de.htwg.se.menschaergerdichnicht.model.playerComponent.{ PlayerInterface, PlayersInterface, TokenInterface }
+import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.{House, TargetField}
+import de.htwg.se.menschaergerdichnicht.model.fieldComponent.FieldInterface
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.{PlayerInterface, PlayersInterface, TokenInterface}
+import play.api.libs.json.{JsNumber, JsValue, Json}
 
 import scala.collection.mutable.ArrayBuffer
-
+import scala.concurrent.{Await, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 /**
  * Created by Anastasia on 29.04.17.
  */
@@ -53,20 +57,13 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
     t
   }
 
+  //Future
   def getAvailableTokens(): ArrayBuffer[String] = {
-    val tokens = new ArrayBuffer[String]
-    for (token <- getTokens()) {
-      if (!token.getFinished()) {
-        if (diced == 6) {
-          tokens += "Token " + token.tokenId
-        } else {
-          if (token.getCounter() > 0) {
-            tokens += "Token " + token.tokenId
-          }
-        }
-      }
-    }
-    tokens
+    val tokens = getTokens()
+    val listTokens = tokens.map(token => Future(if(!token.getFinished() && (diced == 6 || token.getCounter() > 0)) Some("Token " + token.tokenId) else None))
+    val t = Future.sequence(listTokens).map(_.flatten.distinct.toList)
+    val b = Await.result(t, 500 millis)
+    ArrayBuffer(b : _*)
   }
 
   override def toString: String = name
