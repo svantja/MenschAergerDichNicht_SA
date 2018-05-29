@@ -18,7 +18,8 @@ object Game {
   val injector = Guice.createInjector(new MenschAergerDichNichtModule)
   val controller = injector.getInstance(classOf[ControllerInterface])
   val tui = controller.tui
-  val wui = new HttpServer(controller, tui)
+  //auskommentiert wegen docker
+  //val wui = new HttpServer(controller, tui)
 
 
   def main(args: Array[String]): Unit = {
