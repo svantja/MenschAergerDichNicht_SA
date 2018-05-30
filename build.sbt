@@ -21,15 +21,15 @@ libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
 
 libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2"
 
-libraryDependencies += "com.typesafe.play" %% "play-ahc-ws-standalone" % "1.1.3"
+//libraryDependencies += "com.typesafe.akka" % "akka-actor" % "2.3.12"
+
+//libraryDependencies += "com.typesafe.akka" % "akka-remote" % "2.0"
 
 libraryDependencies += "com.typesafe.akka" %% "akka-http" % "10.1.0"
-
 libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.5.11"
-
 libraryDependencies += "com.typesafe.akka" %% "akka-cluster" % "2.5.11"
-
-libraryDependencies += "com.typesafe.akka" % "akka-actor" % "2.3.12"
-
-libraryDependencies += "com.typesafe.akka" % "akka-remote" % "2.0"
+libraryDependencies += "com.typesafe.play" %% "play-ahc-ws-standalone" % "2.0.0-M1"
+libraryDependencies += "com.typesafe.play" %% "play-ws-standalone-json" % "2.0.0-M1"
+libraryDependencies += "io.spray" %% "spray-json" % "1.3.3"
+libraryDependencies += "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.1"
 
