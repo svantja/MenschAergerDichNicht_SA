@@ -235,6 +235,42 @@ class Tui(controller: ControllerInterface) extends Observer with LazyLogging {
       for (i <- 110 to 120) r += "" + f(i)
       r += "\n"
     }
+    if(controller.gameState == SELECT) {
+      val current = controller.players.getCurrentPlayer
+      var b = controller.toJson
+      println(b)
+      val f = printPlaying()
+      r += "\n"
+      for (i <- 0 to 10) r += "" + f(i)
+      r += "\n"
+      for (i <- 11 to 21) r += "" + f(i)
+      r += "\n"
+      for (i <- 22 to 32) r += "" + f(i)
+      r += "\n"
+      for (i <- 33 to 43) r += "" + f(i)
+      r += "\n"
+      for (i <- 44 to 54) r += "" + f(i)
+      r += "\n"
+      for (i <- 55 to 65) r += "" + f(i)
+      r += "\n"
+      for (i <- 66 to 76) r += "" + f(i)
+      r += "\n"
+      for (i <- 77 to 87) r += "" + f(i)
+      r += "\n"
+      for (i <- 88 to 98) r += "" + f(i)
+      r += "\n"
+      for (i <- 99 to 109) r += "" + f(i)
+      r += "\n"
+      for (i <- 110 to 120) r += "" + f(i)
+      r += "\n"
+      if(current.getDiced() == 0){
+        r += "Cannot move, next player.\n"
+      }else{
+        r += "Choose token to move\n"
+        r += "diced" + current.getDiced() + "\n"
+        r += "avaiable tokens: " + current.getAvailableTokens() + "\n"
+      }
+    }
     if (controller.gameState == ONGOING) {
       var b = controller.toJson
       println(b)

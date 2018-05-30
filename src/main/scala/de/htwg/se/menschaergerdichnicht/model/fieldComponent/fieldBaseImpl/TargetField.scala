@@ -18,11 +18,7 @@ case class TargetField(player: PlayerInterface) extends TargetInterface {
 
   def isFull(player: PlayerInterface): Boolean = {
     var bool:Boolean = true
-    for (field <- player.target.targetField) {
-      if (field.tokenId == -1) {
-        bool = false
-      }
-    }
+    player.target.targetField.map(field => if(field.tokenId == -1) bool = false)
     bool
   }
 }
