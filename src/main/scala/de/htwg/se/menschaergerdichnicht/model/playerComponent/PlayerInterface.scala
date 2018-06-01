@@ -33,5 +33,6 @@ trait PlayersInterface {
   def nextPlayer(): PlayersInterface
   def getCurrentPlayer: PlayerInterface
   def getAllPlayer: Vector[PlayerInterface]
+  def addPlayer(name: String): PlayersInterface
 }
 

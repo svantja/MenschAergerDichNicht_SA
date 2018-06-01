@@ -15,7 +15,7 @@ object Game {
   //TODO: neuer thread
   // t1: player: a, b
   // t2: player f, g
-  val injector = Guice.createInjector(new MenschAergerDichNichtModule)
+  val injector = Guice.createInjector(new MenschAergerDichNichtMicroModule)
   val controller = injector.getInstance(classOf[ControllerInterface])
   val tui = controller.tui
   val wui = new HttpServer(controller, tui)

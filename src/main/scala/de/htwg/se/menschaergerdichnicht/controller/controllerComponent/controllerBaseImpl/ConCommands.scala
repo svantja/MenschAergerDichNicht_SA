@@ -18,7 +18,7 @@ case class AddPlayer(name: String, c: Controller) extends Command {
     val player = Player(name, 0)
     if (c.gameState == NONE || c.gameState == PREPARE) {
       if (c.players.players.length < 4) {
-        c.players = c.players.addPlayer(player)
+        c.players = c.players.addPlayer(name)cd   ..player
         if (c.players.players.length != player.playerId) {
           println(c.players.players.length)
           println(player.playerId - 1)

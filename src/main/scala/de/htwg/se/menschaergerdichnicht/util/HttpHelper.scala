@@ -27,6 +27,7 @@ object Http extends Directives with SprayJsonSupport with DefaultJsonProtocol {
   val wsClient = StandaloneAhcWSClient()
 
   def get(url: String, body: JsValue): Unit = {
+    println(url)
     val result = wsClient.url(url)
       .withBody(Json.parse(body.toString))
       .withRequestTimeout(5 minute)
@@ -35,6 +36,7 @@ object Http extends Directives with SprayJsonSupport with DefaultJsonProtocol {
   }
 
   def post(url: String, body: JsValue): Unit = {
+    println(url)
     val result = wsClient.url(url)
       .withRequestTimeout(5 minute)
       .post(Json.parse(body.toString))
@@ -42,6 +44,7 @@ object Http extends Directives with SprayJsonSupport with DefaultJsonProtocol {
   }
 
   def get(url: String): Unit = {
+    println(url)
     val result = wsClient.url(url)
       .withRequestTimeout(5 minute)
       .get()
@@ -49,6 +52,7 @@ object Http extends Directives with SprayJsonSupport with DefaultJsonProtocol {
   }
 
   def getResult(url: String, body: JsValue): JsValue = {
+    println(url)
     val result = wsClient.url(url)
       .withBody(Json.parse(body.toString))
       .withRequestTimeout(5 minute)
@@ -58,6 +62,7 @@ object Http extends Directives with SprayJsonSupport with DefaultJsonProtocol {
   }
 
   def  getResult(url: String): JsValue = {
+    println(url)
     val result = wsClient.url(url)
       .withRequestTimeout(5 minute)
       .get()

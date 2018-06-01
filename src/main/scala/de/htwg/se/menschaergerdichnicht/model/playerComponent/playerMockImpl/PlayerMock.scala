@@ -34,4 +34,5 @@ case class PlayersMock() extends PlayersInterface {
   def nextPlayer(): PlayersInterface = this
   def getCurrentPlayer: PlayerInterface = Player("Birgit", 3)
   def getAllPlayer: Vector[PlayerInterface] = Vector()
+  def addPlayer(name: String): PlayersInterface = this
 }
