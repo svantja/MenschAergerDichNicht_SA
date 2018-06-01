@@ -15,6 +15,8 @@ How to create image:
    * docker build -t menschaergerdichnicht_sa github.com/svantja/menschaergerdichnicht_sa
 * docker run -p 8080:8080 -ti --rm menschaergerdichnicht_sa
 
+Docker and httpServer can not run on same port!
+
 ## Goals of project
 
 * learning Scala
