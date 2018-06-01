@@ -27,6 +27,7 @@ class PlayerHttpServer(var players: PlayersInterface, var player: PlayerInterfac
     } ~
       path ("players" / "add" / Segment) { input => {
         players = players.addPlayer(input)
+        println("lalallaaaaaa" + players.getAllPlayer)
         complete(StatusCodes.OK)
       }} ~
       path("players" / "removePlayer") {

@@ -15,10 +15,11 @@ import scala.util.{ Success, Try }
 case class AddPlayer(name: String, c: Controller) extends Command {
 //TODO: future??akka?? weil neuen Spieler anlegen dauert?
   override def action(): Try[_] = {
-    val player = Player(name, 0)
+    //val player = Player(name, 0)
     if (c.gameState == NONE || c.gameState == PREPARE) {
       if (c.players.players.length < 4) {
-        c.players = c.players.addPlayer(name)cd   ..player
+        c.players = c.players.addPlayer(name)
+        val player = c.players.players.last
         if (c.players.players.length != player.playerId) {
           println(c.players.players.length)
           println(player.playerId - 1)
