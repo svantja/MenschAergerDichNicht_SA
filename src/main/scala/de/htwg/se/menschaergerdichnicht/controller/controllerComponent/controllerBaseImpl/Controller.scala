@@ -1,13 +1,14 @@
 package de.htwg.se.menschaergerdichnicht.controller.controllerComponent.controllerBaseImpl
 
-import com.google.inject.{ Guice, Inject }
+import com.google.inject.{Guice, Inject}
 import de.htwg.se.menschaergerdichnicht.MenschAergerDichNichtModule
-import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.{ ControllerInterface, PlayersChanged }
-import de.htwg.se.menschaergerdichnicht.util.{ Observable, UndoManager }
+import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.{ControllerInterface, PlayersChanged}
+import de.htwg.se.menschaergerdichnicht.util.{Observable, UndoManager}
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.GameState._
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.PlayingInterface
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.Players
-import play.api.libs.json.{ JsNull, JsNumber, JsValue, Json }
+import play.api.libs.json.{JsNull, JsNumber, JsValue, Json}
+import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.Slick.{PlayerSlick, PlayingFieldSlick, TokenSlick}
 
 import scala.util._
 /**
@@ -29,6 +30,27 @@ case class Controller () extends ControllerInterface {
   def startGame(): Try[_] = undoManager.action(Play(this))
 
   def newGame(): Try[_] = undoManager.action(NewGame(this))
+
+  def save(): Unit = {
+    //TODO: häääää
+
+
+    players.players.map{p => (PlayerSlick.create(p), p.tokens.map(t => TokenSlick.create(t)))}
+  }
+
+  def load(): Unit = {
+    //TODO: alte ids speichern bevor read
+    val all_players = players.players.map{p => PlayerSlick.read(p.playerId).get}
+
+    println("tttttttttttttttttt"+all_players.map(p => p.tokens.map(t => t.tokenId)))
+    players.players.map{p => (p.tokens.map(t => TokenSlick.delete(t.tokenId)))}
+
+    all_players.map(p => println("Name: " + p.getName() + ", diced: " + p.getDiced() + "Tokens:" ))
+    players.players.map{p => all_players.iterator}
+
+    println("test:" + players.players)
+    println(all_players.map(p => p.tokens))
+  }
 
   def chooseToken(tokenId: Int): Try[_] = undoManager.action(ChooseToken(tokenId, this))
 

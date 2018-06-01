@@ -41,7 +41,7 @@ object Token {
   val colorList = List("red", "blue", "green", "yellow")
 
   private def newIdNum = {
-    idNumber += 1
+    idNumber += 1;
     idNumber
   }
   private def setNumber = {

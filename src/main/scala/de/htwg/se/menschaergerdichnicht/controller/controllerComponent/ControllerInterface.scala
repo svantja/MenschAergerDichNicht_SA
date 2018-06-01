@@ -29,6 +29,8 @@ trait ControllerInterface extends Publisher {
   def gameStatus: GameState
   def toJson: JsValue
   def newGame(): Try[_]
+  def save(): Unit
+  def load(): Unit
 }
 
 import scala.swing.event.Event

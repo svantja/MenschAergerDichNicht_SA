@@ -28,5 +28,10 @@ case class ControllerMock() extends ControllerInterface {
   def gameStatus: GameState = FINISHED
   def newGame(): Try[_] = Success()
 
+
   override def toJson: JsValue = ???
+
+  override def save(): Unit = ???
+
+  override def load(): Unit = ???
 }

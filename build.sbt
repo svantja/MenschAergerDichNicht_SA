@@ -33,3 +33,10 @@ libraryDependencies += "com.typesafe.akka" %% "akka-cluster" % "2.5.11"
 
 //libraryDependencies += "com.typesafe.akka" % "akka-remote" % "2.0"
 
+libraryDependencies += "com.typesafe.slick" %% "slick" % "3.2.3"
+
+//libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.6.4"
+
+libraryDependencies += "com.typesafe.slick" %% "slick-hikaricp" % "3.2.3"
+
+libraryDependencies += "com.h2database" % "h2" % "1.4.197"
