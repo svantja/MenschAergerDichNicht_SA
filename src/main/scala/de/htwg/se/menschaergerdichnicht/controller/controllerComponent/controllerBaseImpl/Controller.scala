@@ -10,6 +10,7 @@ import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.Pla
 import play.api.libs.json.{JsNull, JsNumber, JsValue, Json}
 import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.Slick.{PlayerSlick, PlayingFieldSlick, TokenSlick}
 
+import scala.collection.mutable.ArrayBuffer
 import scala.util._
 /**
  * Created by Anastasia on 01.05.17.
@@ -40,16 +41,22 @@ case class Controller () extends ControllerInterface {
 
   def load(): Unit = {
     //TODO: alte ids speichern bevor read
+
+    val old = players.players.flatMap(p => p.tokens)
     val all_players = players.players.map{p => PlayerSlick.read(p.playerId).get}
+    //alte Tokens setzen
+    all_players.foreach(p => (p.tokens = ArrayBuffer(old.filter(_.getPlayer() == p).map(t => t) : _*)))
+    //Tokens aus DB laden und setzen
+    all_players.map(p => p.tokens.map(t => TokenSlick.read(t.tokenId)))
 
-    println("tttttttttttttttttt"+all_players.map(p => p.tokens.map(t => t.tokenId)))
-    players.players.map{p => (p.tokens.map(t => TokenSlick.delete(t.tokenId)))}
+    players.players.map{p => (p.tokens.foreach(t => TokenSlick.delete(t.tokenId)), PlayerSlick.delete(p.playerId))}
 
-    all_players.map(p => println("Name: " + p.getName() + ", diced: " + p.getDiced() + "Tokens:" ))
+    all_players.foreach(p => println("Name: " + p.getName() + ", diced: " + p.getDiced() + "Tokens:" ))
     players.players.map{p => all_players.iterator}
 
     println("test:" + players.players)
-    println(all_players.map(p => p.tokens))
+
+    println(all_players.map(p => p.tokens.map(i => (i.tokenId, i.getPlayer().playerId))))
   }
 
   def chooseToken(tokenId: Int): Try[_] = undoManager.action(ChooseToken(tokenId, this))

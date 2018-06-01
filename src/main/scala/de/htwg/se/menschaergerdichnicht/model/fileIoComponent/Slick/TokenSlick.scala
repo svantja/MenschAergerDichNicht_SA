@@ -14,16 +14,15 @@ object TokenSlick extends Dao[TokenInterface, Long]{
 
   import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.Slick.SlickSB._
 
-  case class TokenData(id: Long, playeId: Long, color: String, positionId: Int, counter: Int, unique: Long = 0L)
+  case class TokenData(id: Long, playeId: Long, color: String, positionId: Int, counter: Int)
 
   class TokenTable(tag: Tag) extends Table[TokenData](tag, "TOKENS"){
-    def id = column[Long]("ID")
+    def id = column[Long]("TOKEN_ID", O.PrimaryKey)
     def playerId = column[Long]("PLAYERID")
     def color = column[String]("COLOR")
     def positionId = column[Int]("POSITIONID")
     def counter = column[Int]("COUNTER")
-    def unique = column[Long]("TOKEN_ID", O.PrimaryKey)
-    def * = (id, playerId, color, positionId, counter, unique).mapTo[TokenData]
+    def * = (id, playerId, color, positionId, counter).mapTo[TokenData]
   }
 
   val tokens = TableQuery[TokenTable]
@@ -36,7 +35,7 @@ object TokenSlick extends Dao[TokenInterface, Long]{
 
   override def create(token: TokenInterface): Long = {
     idDirty += 1
-    Await.result(db.run(tokens += TokenData(token.tokenId, token.getPlayer().playerId, token.color.toString, token.position._2, token.counter, idDirty)), Duration.Inf)
+    Await.result(db.run(tokens += TokenData(token.tokenId, token.getPlayer().playerId, token.color.toString, token.position._2, token.counter)), Duration.Inf)
     idDirty
   }
 
@@ -48,7 +47,7 @@ object TokenSlick extends Dao[TokenInterface, Long]{
 
   //PlayerSlick.read(tok.playeId).get.players.filter(p => p.playerId == tok.playeId).head
     val tokenVector = Await.result(tokensFuture, Duration.Inf).map { tok =>
-      Token(PlayerSlick.read(tok.playeId).get, (PlayingFieldSlick.read(tok.positionId).get, tok.positionId), tok.counter)
+      Token(PlayerSlick.read(tok.playeId).get, (PlayingFieldSlick.read(0).get, tok.positionId), tok.counter)
     }
 
     Await.result(tokensFuture, Duration.Inf).headOption match {

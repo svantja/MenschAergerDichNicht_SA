@@ -21,7 +21,7 @@ object PlayingFieldSlick extends Dao[FieldInterface, Long]{
   class FieldTable(tag: Tag) extends Table[FieldData](tag, "TOKENS"){
     def id = column[Long]("ID")
     def tokenId = column[Int]("TOKENID")
-    def unique = column[Long]("TOKEN_ID", O.PrimaryKey, O.AutoInc)
+    def unique = column[Long]("TOKEN_ID", O.PrimaryKey)
     def * = (id, tokenId, unique).mapTo[FieldData]
   }
 
