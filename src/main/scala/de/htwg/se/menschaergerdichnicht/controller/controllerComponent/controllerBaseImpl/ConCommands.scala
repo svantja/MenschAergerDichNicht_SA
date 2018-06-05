@@ -13,17 +13,16 @@ import scala.util.{ Success, Try }
  * Created by Anastasia on 06.06.17.
  */
 case class AddPlayer(name: String, c: Controller) extends Command {
-//TODO: future??akka?? weil neuen Spieler anlegen dauert?
+  //TODO: future??akka?? weil neuen Spieler anlegen dauert?
   override def action(): Try[_] = {
-    //val player = Player(name, 0)
+    val player = Player(name, 0)
     if (c.gameState == NONE || c.gameState == PREPARE) {
-      if (c.players.players.length < 4) {
-        c.players = c.players.addPlayer(name)
-        val player = c.players.players.last
-        if (c.players.players.length != player.playerId) {
-          println(c.players.players.length)
+      if (c.players.getAllPlayer.length < 4) {
+        c.players = c.players.addPlayer(player)
+        if (c.players.getAllPlayer.length != player.playerId) {
+          println(c.players.getAllPlayer.length)
           println(player.playerId - 1)
-          player.playerId = c.players.players.length
+          player.playerId = c.players.getAllPlayer.length
           val tokens = player.getTokens()
 
           for (i <- 0 until tokens.size) {
@@ -55,7 +54,7 @@ case class AddPlayer(name: String, c: Controller) extends Command {
   }
 
   override def undo(): Try[_] = {
-    for (p <- c.players.players) {
+    for (p <- c.players.getAllPlayer) {
       println(p.playerId, "gelöscht")
       c.players = c.players.removePlayer()
     }
@@ -69,11 +68,11 @@ case class AddPlayer(name: String, c: Controller) extends Command {
 
 case class NewGame(c: Controller) extends Command {
   override def action(): Try[_] = {
-    for (p <- c.players.players) {
+    for (p <- c.players.getAllPlayer) {
       println(p.playerId, "gelöscht")
       c.players = c.players.removePlayer()
     }
-    c.players.currentPlayer = 0
+//    c.players.currentPlayer = 0
     c.gameState = NONE
     c.tui.update
     c.publish(new PlayersChanged)

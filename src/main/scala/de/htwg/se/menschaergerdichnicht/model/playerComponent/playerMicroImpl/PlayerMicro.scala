@@ -7,13 +7,13 @@ import spray.json.DefaultJsonProtocol
 
 
 case class UpdateCurrentPlayer(player: Player)
-
-case class Add(name: String)
+case class Add(player: Player)
 
 object PlayerJsonProtocol extends DefaultJsonProtocol {
-  implicit val pushFormat = jsonFormat1(Add)
+  implicit val playerFormat = jsonFormat2(Player)
+  implicit val addFormat = jsonFormat1(Add)
   //implicit val playerFormat = jsonFormat2(Player)
-  //implicit val updatePlayerFormat = jsonFormat1(UpdateCurrentPlayer)
+  implicit val updatePlayerFormat = jsonFormat1(UpdateCurrentPlayer)
 }
 
 class PlayerMicro(url: String) extends PlayersInterface {
@@ -28,30 +28,29 @@ class PlayerMicro(url: String) extends PlayersInterface {
     this
   }
 
-  override def addPlayer(name: String): PlayersInterface = {
-    val jsonVal = Add(name).toJson
-    Http.get(url + "add/" + name)
+  override def addPlayer(player: PlayerInterface): PlayersInterface = {
+    val jsonVal = Add(Player(player.getName, 0)).toJson
+    Http.get(url + "add/" + player)
     this
   }
-
-//  override def updateCurrentPlayer(player: PlayerInterface): PlayersInterface = {
-//    val jsonVal = UpdateCurrentPlayer(Player2(player.getName, player.getDiced)).toJson
-//    Http.get(url + "updateCurrentPlayer", jsonVal)
-//    this
-//  }
 
   override def nextPlayer(): PlayersInterface = {
     Http.get(url + "nextPlayer")
     this
   }
 
-//  override def getCurrentPlayer: Player = {
-//    Http.getResult(url + "getCurrentPlayer").convertTo[Player]
-//  }
+  override def getCurrentPlayer: Player = {
+    Http.getResult(url + "getCurrentPlayer").convertTo[Player]
+  }
 
-  override def updateCurrentPlayer(player: PlayerInterface): PlayersInterface = ???
+  override def updateCurrentPlayer(player: PlayerInterface): PlayersInterface = {
+    val jsonVal = UpdateCurrentPlayer(Player(player.getName, player.getDiced)).toJson
+    Http.get(url + "updateCurrentPlayer", jsonVal)
+    this
+  }
 
-  override def getAllPlayer = ???
+  override def getAllPlayer: Vector[Player] = {
+    Http.getResult(url + "getAllPlayers").convertTo[Vector[Player]]
+  }
 
-  override def getCurrentPlayer = ???
 }

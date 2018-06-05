@@ -18,7 +18,7 @@ object Game {
   val injector = Guice.createInjector(new MenschAergerDichNichtMicroModule)
   val controller = injector.getInstance(classOf[ControllerInterface])
   val tui = controller.tui
-  val wui = new HttpServer(controller, tui)
+//  val wui = new HttpServer(controller, tui)
 
 
   def main(args: Array[String]): Unit = {

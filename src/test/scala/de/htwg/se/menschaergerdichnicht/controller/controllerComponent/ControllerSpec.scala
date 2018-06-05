@@ -1,14 +1,21 @@
 package de.htwg.se.menschaergerdichnicht.controller.controllerComponent
 
+import com.google.inject.Guice
+import de.htwg.se.menschaergerdichnicht.MenschAergerDichNichtModule
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.controllerBaseImpl.Controller
+import de.htwg.se.menschaergerdichnicht.model.fieldComponent.PlayingInterface
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.PlayersInterface
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.Player
-import org.scalatest.{ FlatSpec, Matchers }
+import de.htwg.se.menschaergerdichnicht.util.UndoManager
+import org.scalatest.{FlatSpec, Matchers}
 
 /**
  * Created by Anastasia on 26.06.17.
  */
 class ControllerSpec extends FlatSpec with Matchers {
-  val c = Controller()
+  val injector = Guice.createInjector(new MenschAergerDichNichtModule)
+  val c = new Controller(injector.getInstance(classOf[PlayersInterface]),
+    injector.getInstance(classOf[PlayingInterface]))
 
   "A Controller" should "have players" in {
     c.players

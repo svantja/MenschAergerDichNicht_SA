@@ -1,28 +1,38 @@
 package de.htwg.se.menschaergerdichnicht.controller.controllerComponent.controllerBaseImpl
 
-import com.google.inject.{ Guice, Inject }
-import de.htwg.se.menschaergerdichnicht.MenschAergerDichNichtModule
-import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.{ ControllerInterface, PlayersChanged }
-import de.htwg.se.menschaergerdichnicht.util.{ Observable, UndoManager }
+import com.google.inject.{Guice, Inject}
+import de.htwg.se.menschaergerdichnicht.{MenschAergerDichNichtMicroModule, MenschAergerDichNichtModule}
+import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.{ControllerInterface, PlayersChanged}
+import de.htwg.se.menschaergerdichnicht.util.{Observable, UndoManager}
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.GameState._
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.PlayingInterface
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.PlayersInterface
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.Players
-import play.api.libs.json.{ JsNull, JsNumber, JsValue, Json }
+import play.api.libs.json.{JsNull, JsNumber, JsValue, Json}
 
 import scala.util._
 /**
  * Created by Anastasia on 01.05.17.
  */
-case class Controller () extends ControllerInterface {
+case class Controller (
+                        var players: PlayersInterface,
+                        var playingField: PlayingInterface,
+                        var undoManager: UndoManager) extends ControllerInterface {
 
-  var players = Players()
+//  var players = Players()
 
-  val injector = Guice.createInjector(new MenschAergerDichNichtModule)
-  var playingField = injector.getInstance(classOf[PlayingInterface])
+//  val injector = Guice.createInjector(new MenschAergerDichNichtMicroModule)
+//  var playingField = injector.getInstance(classOf[PlayingInterface])
+//  var players = injector.getInstance(classOf[PlayersInterface])
+
+  @Inject()
+  def this(players: PlayersInterface, playingField: PlayingInterface) = {
+    this(players, playingField, new UndoManager)
+  }
 
   var message = ""
   var gameState: GameState = NONE
-  var undoManager = new UndoManager
+//  var undoManager = new UndoManager
 
   def addPlayer(name: String): Try[_] = undoManager.action(AddPlayer(name, this))
 
@@ -35,14 +45,14 @@ case class Controller () extends ControllerInterface {
   override def gameStatus: GameState = ???
 
   def toJson: JsValue = {
-    for (player <- players.players) {
+    for (player <- players.getAllPlayer) {
       println(player.getName(), player.getDiced())
     }
     Json.obj(
-      "current" -> players.currentPlayer,
+      "current" -> players.getCurrentPlayer.getName(),
       "state" -> gameState,
       "players" -> Json.toJson(
-        for (player <- players.players) yield {
+        for (player <- players.getAllPlayer) yield {
           Json.obj(
             "playerId" -> player.playerId,
             "name" -> player.getName(),

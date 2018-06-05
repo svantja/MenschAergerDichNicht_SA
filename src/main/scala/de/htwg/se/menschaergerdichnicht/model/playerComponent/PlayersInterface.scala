@@ -9,6 +9,16 @@ import scala.collection.mutable.ArrayBuffer
 /**
  * Created by Anastasia on 25.06.17.
  */
+
+trait PlayersInterface {
+  def removePlayer(): PlayersInterface
+  def updateCurrentPlayer(player: PlayerInterface): PlayersInterface
+  def nextPlayer(): PlayersInterface
+  def getCurrentPlayer: PlayerInterface
+  def getAllPlayer: Vector[PlayerInterface]
+  def addPlayer(player: PlayerInterface): PlayersInterface
+}
+
 trait PlayerInterface {
   var playerId: Int
   val house: HouseInterface
@@ -25,14 +35,5 @@ trait PlayerInterface {
   def addTokens(): ArrayBuffer[TokenInterface]
   def getTokenById(tokenId: Int): Option[TokenInterface]
   def getAvailableTokens(): ArrayBuffer[String]
-}
-
-trait PlayersInterface {
-  def removePlayer(): PlayersInterface
-  def updateCurrentPlayer(player: PlayerInterface): PlayersInterface
-  def nextPlayer(): PlayersInterface
-  def getCurrentPlayer: PlayerInterface
-  def getAllPlayer: Vector[PlayerInterface]
-  def addPlayer(name: String): PlayersInterface
 }
 

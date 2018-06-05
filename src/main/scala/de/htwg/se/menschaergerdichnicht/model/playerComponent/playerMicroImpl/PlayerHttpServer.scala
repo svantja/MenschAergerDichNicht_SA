@@ -26,25 +26,31 @@ class PlayerHttpServer(var players: PlayersInterface, var player: PlayerInterfac
       complete(StatusCodes.OK -> Json.toJson(players.toString).toString())
     } ~
       path ("players" / "add" / Segment) { input => {
-        players = players.addPlayer(input)
-        println("lalallaaaaaa" + players.getAllPlayer)
+        val player = Player(input, 0)
+        players = players.addPlayer(player)
         complete(StatusCodes.OK)
       }} ~
       path("players" / "removePlayer") {
         players = players.removePlayer()
         complete(StatusCodes.OK)
       } ~
-//      path("players" / "updateCurPlayer") {
-//        entity(as[UpdateCurrentPlayer]) {
-//          jsValue => {
-//            players = players.updateCurrentPlayer(jsValue.player)
-//            complete(StatusCodes.OK)
-//          }
-//        }
-//      }
+      path("players" / "updateCurrentPlayer") {
+        entity(as[UpdateCurrentPlayer]) {
+          jsValue => {
+            players = players.updateCurrentPlayer(jsValue.player)
+            complete(StatusCodes.OK)
+          }
+        }
+      } ~
       path("players" / "nextPlayer") {
         players = players.nextPlayer
         complete(StatusCodes.OK)
+      } ~
+      path("players" / "getCurrent") {
+        complete(StatusCodes.OK -> players.getCurrentPlayer.asInstanceOf[Player])
+      } ~
+      path("players" / "getAllPlayers") {
+        complete(StatusCodes.OK -> players.getAllPlayer.asInstanceOf[Vector[Player]])
       }
   }
   val bindingFuture = Http().bindAndHandle(route, "localhost", 8081)

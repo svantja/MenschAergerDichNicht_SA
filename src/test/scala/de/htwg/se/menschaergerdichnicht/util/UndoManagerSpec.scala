@@ -1,14 +1,20 @@
 package de.htwg.se.menschaergerdichnicht.util
 
-import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.controllerBaseImpl.{ AddPlayer, Controller }
-import org.scalatest.{ FlatSpec, Matchers }
+import com.google.inject.Guice
+import de.htwg.se.menschaergerdichnicht.MenschAergerDichNichtModule
+import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.controllerBaseImpl.{AddPlayer, Controller}
+import de.htwg.se.menschaergerdichnicht.model.fieldComponent.PlayingInterface
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.PlayersInterface
+import org.scalatest.{FlatSpec, Matchers}
 
 /**
  * Created by Anastasia on 26.06.17.
  */
 class UndoManagerSpec extends FlatSpec with Matchers {
   val undoManager = new UndoManager()
-  val c = Controller()
+  val injector = Guice.createInjector(new MenschAergerDichNichtModule)
+  val c = new Controller(injector.getInstance(classOf[PlayersInterface]),
+    injector.getInstance(classOf[PlayingInterface]))
   val command = AddPlayer("tester", c)
   "An UndoManager" should "have an undoStack" in {
     undoManager.undoStack

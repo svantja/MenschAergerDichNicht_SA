@@ -5,11 +5,10 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.server.Directives
 import akka.stream.ActorMaterializer
 import play.api.libs.json.Json
-import play.api.libs.ws.ahc.StandaloneAhcWSClient
-import spray.json.DefaultJsonProtocol
-import spray.json.{JsValue, _}
 import play.api.libs.ws.JsonBodyReadables._
 import play.api.libs.ws.JsonBodyWritables._
+import play.api.libs.ws.ahc._
+import spray.json.{JsValue, _}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -22,12 +21,11 @@ object Http extends Directives with SprayJsonSupport with DefaultJsonProtocol {
   system.registerOnTermination {
     System.exit(0)
   }
-
   implicit val materializer = ActorMaterializer()
   val wsClient = StandaloneAhcWSClient()
 
   def get(url: String, body: JsValue): Unit = {
-    println(url)
+    //println(url)
     val result = wsClient.url(url)
       .withBody(Json.parse(body.toString))
       .withRequestTimeout(5 minute)
@@ -36,7 +34,7 @@ object Http extends Directives with SprayJsonSupport with DefaultJsonProtocol {
   }
 
   def post(url: String, body: JsValue): Unit = {
-    println(url)
+    //println(url)
     val result = wsClient.url(url)
       .withRequestTimeout(5 minute)
       .post(Json.parse(body.toString))
@@ -44,7 +42,7 @@ object Http extends Directives with SprayJsonSupport with DefaultJsonProtocol {
   }
 
   def get(url: String): Unit = {
-    println(url)
+    //println(url)
     val result = wsClient.url(url)
       .withRequestTimeout(5 minute)
       .get()
@@ -52,7 +50,7 @@ object Http extends Directives with SprayJsonSupport with DefaultJsonProtocol {
   }
 
   def getResult(url: String, body: JsValue): JsValue = {
-    println(url)
+    //println(url)
     val result = wsClient.url(url)
       .withBody(Json.parse(body.toString))
       .withRequestTimeout(5 minute)
@@ -61,8 +59,8 @@ object Http extends Directives with SprayJsonSupport with DefaultJsonProtocol {
     Await.result(result, 5 seconds).toString.parseJson
   }
 
-  def  getResult(url: String): JsValue = {
-    println(url)
+  def getResult(url: String): JsValue = {
+    //println(url)
     val result = wsClient.url(url)
       .withRequestTimeout(5 minute)
       .get()

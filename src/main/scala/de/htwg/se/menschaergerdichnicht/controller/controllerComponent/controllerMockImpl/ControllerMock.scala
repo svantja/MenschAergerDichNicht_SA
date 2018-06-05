@@ -7,10 +7,11 @@ import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.Controlle
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.GameState._
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.PlayingInterface
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.PlayingField
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.PlayersInterface
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.Players
 import play.api.libs.json.JsValue
 
-import scala.util.{ Success, Try }
+import scala.util.{Success, Try}
 
 /**
  * Created by Anastasia on 25.06.17.
@@ -18,7 +19,7 @@ import scala.util.{ Success, Try }
 case class ControllerMock() extends ControllerInterface {
 
   val injector = Guice.createInjector(new MenschAergerDichNichtModule)
-  var players = Players()
+  var players = injector.getInstance(classOf[PlayersInterface])
   var playingField = injector.getInstance(classOf[PlayingInterface])
   var message = ""
   var gameState = FINISHED

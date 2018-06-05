@@ -7,6 +7,7 @@ import scala.util._
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.GameState._
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.PlayingInterface
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.PlayingField
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.PlayersInterface
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.Players
 import de.htwg.se.menschaergerdichnicht.util.Observable
 import play.api.libs.json.JsValue
@@ -18,7 +19,7 @@ import scala.swing.Publisher
  */
 trait ControllerInterface extends Publisher {
 
-  var players: Players
+  var players: PlayersInterface
   var playingField: PlayingInterface
   var message: String
   var gameState: GameState

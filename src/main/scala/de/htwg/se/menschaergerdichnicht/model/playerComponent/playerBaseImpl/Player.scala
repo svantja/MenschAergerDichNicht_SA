@@ -14,7 +14,9 @@ import scala.concurrent.duration._
  */
 case class Player(var name: String, var diced: Int) extends PlayerInterface {
 
-  var playerId = Player.newIdNum
+  //var playerId = Player.newIdNum
+
+  var playerId = 0
 
   val house = House(this)
 
@@ -66,19 +68,15 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
 
 }
 
-object Player {
-  private var idNumber = 0
-  private def newIdNum = {
-    idNumber += 1
-    idNumber
-  }
-}
+//object Player {
+//  private var idNumber = 0
+//  private def newIdNum = {
+//    idNumber += 1
+//    idNumber
+//  }
+//}
 
 case class Players(var currentPlayer: Int = 0, players: Vector[PlayerInterface] = Vector()) extends PlayersInterface {
-
-  def addPlayer(name: String): Players = {
-    addPlayer(new Player(name, 0))
-  }
 
   def addPlayer(player: PlayerInterface): Players = {
     copy(players = players :+ player)

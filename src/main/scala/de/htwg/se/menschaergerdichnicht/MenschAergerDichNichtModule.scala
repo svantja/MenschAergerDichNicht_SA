@@ -25,7 +25,13 @@ class MenschAergerDichNichtModule extends AbstractModule with ScalaModule {
 
 class MenschAergerDichNichtMicroModule extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
+
     bind[ControllerInterface].to[controllerBaseImpl.Controller]
+
+    bind[FieldInterface].to[fieldBaseImpl.Field]
+    bind[PlayingInterface].to[fieldBaseImpl.PlayingField]
+
     bind[PlayersInterface].to[playerMicroImpl.PlayerMicro]
+
   }
 }

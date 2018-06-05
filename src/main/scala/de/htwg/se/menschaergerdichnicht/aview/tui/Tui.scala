@@ -210,7 +210,7 @@ class Tui(controller: ControllerInterface) extends Observer with LazyLogging {
       var b = controller.toJson
       println(b)
       val p = controller.players
-      val f = paintStartFields(controller.players.players.length)
+      val f = paintStartFields(controller.players.getAllPlayer.length)
       r += "\n"
       for (i <- 0 to 10) r += "" + f(i)
       r += "\n"
