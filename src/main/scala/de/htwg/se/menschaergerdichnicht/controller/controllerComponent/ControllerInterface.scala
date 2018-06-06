@@ -7,6 +7,7 @@ import scala.util._
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.GameState._
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.PlayingInterface
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.PlayingField
+import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.Slick.{fieldQuery, playerQuery}
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.Players
 import de.htwg.se.menschaergerdichnicht.util.Observable
 import play.api.libs.json.JsValue
@@ -23,6 +24,8 @@ trait ControllerInterface extends Publisher {
   var message: String
   var gameState: GameState
   var tui = new Tui(this)
+  var selectPlayer = new playerQuery(this)
+  var selectField = new fieldQuery(this)
   def addPlayer(name: String): Try[_]
   def startGame(): Try[_]
   def chooseToken(tokenId: Int): Try[_]
