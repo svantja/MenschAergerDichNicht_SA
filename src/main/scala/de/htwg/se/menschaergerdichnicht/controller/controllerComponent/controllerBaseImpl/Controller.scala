@@ -36,6 +36,7 @@ case class Controller () extends ControllerInterface {
     //TODO: häääää
     players.players.map{p => this.selectPlayer.PlayerSlick.create(p)}
     playingField.playingField.map(f => this.selectField.PlayingFieldSlick.create(f))
+    this.tui.printTui()
   }
 
   def load(): Unit = {
