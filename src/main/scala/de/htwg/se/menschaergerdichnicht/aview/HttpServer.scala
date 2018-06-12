@@ -29,7 +29,7 @@ class HttpServer(controller: ControllerInterface, tui: Tui) {
       }
       }
   }
-  val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", 8080)
+  val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
 
   def printHtmlTui: StandardRoute = {
     complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>HTWG MenschSpiel</h1>" + "<pre>" + tui.printingTui() + "</pre>"))
