@@ -8,7 +8,7 @@ import de.htwg.se.menschaergerdichnicht.model.playerComponent.TokenInterface
  */
 case class FieldMock() extends FieldInterface {
   var tokenId = 1
-  def setToken(token: TokenInterface) = token
+  def setToken(token: Int) = token
   def getToken(): Int = 1
   def removeToken() = 1
 }

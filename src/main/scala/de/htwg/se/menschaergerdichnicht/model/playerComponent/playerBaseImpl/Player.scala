@@ -42,7 +42,7 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
     val tokens = new ArrayBuffer[TokenInterface]
     for (i <- 1 to 4) {
       tokens += new Token(this, (house.house(i - 1), i - 1), 0)
-      house.house(i - 1).setToken(tokens(i - 1))
+      house.house(i - 1).setToken(tokens(i - 1).tokenId)
     }
     tokens
   }

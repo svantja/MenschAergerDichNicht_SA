@@ -9,7 +9,7 @@ import scala.collection.mutable.ArrayBuffer
  */
 trait FieldInterface {
   var tokenId: Int
-  def setToken(token: TokenInterface)
+  def setToken(token: Int)
   def getToken(): Int
   def removeToken()
 }

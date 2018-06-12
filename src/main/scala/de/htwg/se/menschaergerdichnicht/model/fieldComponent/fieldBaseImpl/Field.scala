@@ -11,7 +11,7 @@ case class Field() extends FieldInterface {
 
   var tokenId: Int = -1
 
-  def setToken(token: TokenInterface) { this.tokenId = token.tokenId }
+  def setToken(token: Int) { this.tokenId = token }
 
   def getToken(): Int = tokenId
 

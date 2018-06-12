@@ -27,10 +27,10 @@ class TargetFieldSpec extends FlatSpec with Matchers {
     player.target.isFull(player)
   }
   it should "return true" in {
-    player.target.targetField(0).setToken(player.tokens(0))
-    player.target.targetField(1).setToken(player.tokens(1))
-    player.target.targetField(2).setToken(player.tokens(2))
-    player.target.targetField(3).setToken(player.tokens(3))
+    player.target.targetField(0).setToken(player.tokens(0).tokenId)
+    player.target.targetField(1).setToken(player.tokens(1).tokenId)
+    player.target.targetField(2).setToken(player.tokens(2).tokenId)
+    player.target.targetField(3).setToken(player.tokens(3).tokenId)
 
     player.target.isFull(player)
   }

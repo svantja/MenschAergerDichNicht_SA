@@ -30,12 +30,12 @@ case class PlayingField @Inject()() extends PlayingInterface {
       token.position._1.tokenId = -1
       if (playingField(newPosition).tokenId == -1) {
         token.setPosition((playingField(newPosition), newPosition))
-        playingField(newPosition).setToken(token)
+        playingField(newPosition).setToken(token.tokenId)
       } else {
         val toBeKicked = playingField(newPosition).tokenId
         if (kickToken(toBeKicked, token.getPlayer(), players)) {
           token.setPosition((playingField(newPosition), newPosition))
-          playingField(newPosition).setToken(token)
+          playingField(newPosition).setToken(token.tokenId)
         }
       }
     }
@@ -49,28 +49,28 @@ case class PlayingField @Inject()() extends PlayingInterface {
       case "player one" => {
         val player = token.getPlayer()
         val free = player.house.house(tokenId - 1)
-        free.setToken(token)
+        free.setToken(token.tokenId)
         token.setPosition((free, tokenId - 1))
         token.setCounter(0)
       }
       case "player two" => {
         val player = token.getPlayer()
         val free = player.house.house(tokenId - 5)
-        free.setToken(token)
+        free.setToken(token.tokenId)
         token.setPosition((free, tokenId - 5))
         token.setCounter(0)
       }
       case "player three" => {
         val player = token.getPlayer()
         val free = player.house.house(tokenId - 9)
-        free.setToken(token)
+        free.setToken(token.tokenId)
         token.setPosition((free, tokenId - 9))
         token.setCounter(0)
       }
       case "player four" => {
         val player = token.getPlayer()
         val free = player.house.house(tokenId - 13)
-        free.setToken(token)
+        free.setToken(token.tokenId)
         token.setPosition((free, tokenId - 13))
         token.setCounter(0)
       }
@@ -120,7 +120,7 @@ case class PlayingField @Inject()() extends PlayingInterface {
         if (token.counter + i <= 44) {
           val target = player.target.targetField(i)
           if (target.tokenId == -1) {
-            target.setToken(token)
+            target.setToken(token.tokenId)
             token.position._1.tokenId = -1
             token.setPosition(target, i)
             token.setFinished(true)
@@ -153,13 +153,13 @@ case class PlayingField @Inject()() extends PlayingInterface {
     if (playingField(newPosition).tokenId == -1) {
       token.setPosition((playingField(newPosition), newPosition))
       token.setCounter(1)
-      playingField(newPosition).setToken(token)
+      playingField(newPosition).setToken(token.tokenId)
     } else {
       val toBeKicked = playingField(newPosition).tokenId
       if (kickToken(toBeKicked, token.getPlayer(), players)) {
         token.setPosition((playingField(newPosition), newPosition))
         token.setCounter(1)
-        playingField(newPosition).setToken(token)
+        playingField(newPosition).setToken(token.tokenId)
       }
     }
   }

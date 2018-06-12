@@ -19,7 +19,7 @@ class FieldSpec extends FlatSpec with Matchers {
 
   "A Field" should "set Token" in {
     val player = Player("test", 0)
-    Field().setToken(Token(player, (Field(), 0), 0))
+    Field().setToken(0)
   }
 
   "A Field" should "get Token" in {
