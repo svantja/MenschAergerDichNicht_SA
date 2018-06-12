@@ -1,7 +1,7 @@
 package de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl
 
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.{House, TargetField}
-import de.htwg.se.menschaergerdichnicht.model.fieldComponent.FieldInterface
+import de.htwg.se.menschaergerdichnicht.model.fieldComponent.{FieldInterface, HouseInterface}
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.{PlayerInterface, PlayersInterface, TokenInterface}
 import play.api.libs.json.{JsNumber, JsValue, Json}
 
@@ -13,6 +13,8 @@ import scala.concurrent.duration._
  * Created by Anastasia on 29.04.17.
  */
 case class Player(var name: String, var diced: Int) extends PlayerInterface {
+
+  def this(name: String) = this(name, 0)
 
   //var playerId = Player.newIdNum
 
@@ -44,7 +46,7 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
     val tokens = new ArrayBuffer[TokenInterface]
     for (i <- 1 to 4) {
       tokens += new Token(this, (house.house(i - 1), i - 1), 0)
-      house.house(i - 1).setToken(tokens(i - 1))
+      house.house(i - 1).setToken(tokens(i - 1).tokenId)
     }
     tokens
   }
@@ -68,15 +70,17 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
 
 }
 
-//object Player {
-//  private var idNumber = 0
-//  private def newIdNum = {
-//    idNumber += 1
-//    idNumber
-//  }
-//}
+object Player {
+  private var idNumber = 0
+  private def newIdNum = {
+    idNumber += 1
+    idNumber
+  }
+}
 
 case class Players(var currentPlayer: Int = 0, players: Vector[PlayerInterface] = Vector()) extends PlayersInterface {
+
+  def this() = this(0, Vector())
 
   def addPlayer(player: PlayerInterface): Players = {
     copy(players = players :+ player)
@@ -85,6 +89,7 @@ case class Players(var currentPlayer: Int = 0, players: Vector[PlayerInterface] 
   def removePlayer(): Players = {
     copy(players = players.init)
   }
+  def length: Int = players.length
   def updateCurrentPlayer(player: PlayerInterface): Players = {
     copy(players = players.updated(currentPlayer, Player(player.getName(), player.getDiced())))
   }
@@ -104,5 +109,6 @@ case class Players(var currentPlayer: Int = 0, players: Vector[PlayerInterface] 
     players.map(player => if(player == players(currentPlayer)) nameList += "Current > " + player.toString() + "\n" else nameList += "  " + player.toString() + "\n")
     nameList
   }
+
 
 }

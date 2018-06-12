@@ -12,6 +12,7 @@ import scala.collection.mutable.ArrayBuffer
 
 trait PlayersInterface {
   def removePlayer(): PlayersInterface
+  def length: Int
   def updateCurrentPlayer(player: PlayerInterface): PlayersInterface
   def nextPlayer(): PlayersInterface
   def getCurrentPlayer: PlayerInterface
