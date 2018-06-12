@@ -18,7 +18,7 @@ class HttpServer(controller: ControllerInterface, tui: Tui) {
 
   val route: Route = get {
     pathSingleSlash {
-      complete(HttpEntity(ContentTypes.`text/plain(UTF-8)`, "<h1>HTWG Mensch</h1>"))
+      complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>HTWG Mensch</h1>"))
     }
     path("Mensch") {
       printHtmlTui
