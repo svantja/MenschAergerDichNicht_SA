@@ -28,10 +28,14 @@ class MenschAergerDichNichtMicroModule extends AbstractModule with ScalaModule {
 
     bind[ControllerInterface].to[controllerBaseImpl.Controller]
 
-    bind[FieldInterface].to[fieldBaseImpl.Field]
+//    bind[FieldInterface].to[fieldBaseImpl.Field]
     bind[PlayingInterface].to[fieldBaseImpl.PlayingField]
 
-    bind[PlayersInterface].to[playerMicroImpl.PlayerMicro]
+    bind[PlayersInterface].to[playerBaseImpl.Players]
+
+//    bind[PlayersInterface].to[playerMicroImpl.PlayerMicro]
+
+    bind[FieldInterface].to[fieldMicroImpl.FieldMicro]
 
   }
 }

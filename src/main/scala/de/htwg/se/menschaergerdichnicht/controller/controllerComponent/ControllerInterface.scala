@@ -5,6 +5,7 @@ import de.htwg.se.menschaergerdichnicht.aview.tui.Tui
 
 import scala.util._
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.GameState._
+import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.PlayingInterface
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.PlayingField
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.PlayersInterface
@@ -19,6 +20,7 @@ import scala.swing.Publisher
  */
 trait ControllerInterface extends Publisher {
 
+  var players2: Players
   var players: PlayersInterface
   var playingField: PlayingInterface
   var message: String

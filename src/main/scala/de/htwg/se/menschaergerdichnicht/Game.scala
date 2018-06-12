@@ -4,6 +4,7 @@ import com.google.inject.Guice
 import de.htwg.se.menschaergerdichnicht.aview.tui.Tui
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.ControllerInterface
 import de.htwg.se.menschaergerdichnicht.aview.HttpServer
+import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.controllerBaseImpl.Controller
 
 import scala.io.StdIn.readLine
 
@@ -17,7 +18,7 @@ object Game {
   // t2: player f, g
   val injector = Guice.createInjector(new MenschAergerDichNichtMicroModule)
   val controller = injector.getInstance(classOf[ControllerInterface])
-  val tui = controller.tui
+  val tui = new Tui(controller)
 //  val wui = new HttpServer(controller, tui)
 
 
