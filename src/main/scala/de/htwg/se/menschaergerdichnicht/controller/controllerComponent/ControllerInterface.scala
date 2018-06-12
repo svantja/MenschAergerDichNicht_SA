@@ -19,8 +19,6 @@ import scala.swing.Publisher
  * Created by Anastasia on 25.06.17.
  */
 trait ControllerInterface extends Publisher {
-
-  var players2: Players
   var players: PlayersInterface
   var playingField: PlayingInterface
   var message: String

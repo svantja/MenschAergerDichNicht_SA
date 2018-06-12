@@ -30,6 +30,7 @@ case class Controller (
     this(players, playingField, new UndoManager)
   }
 
+  var players2 = new Players()
   var message = ""
   var gameState: GameState = NONE
 //  var undoManager = new UndoManager
@@ -45,14 +46,14 @@ case class Controller (
   override def gameStatus: GameState = ???
 
   def toJson: JsValue = {
-    for (player <- players.getAllPlayer) {
+    for (player <- players2.players) {
       println(player.getName(), player.getDiced())
     }
     Json.obj(
-      "current" -> players.getCurrentPlayer.getName(),
+      "current" -> players2.currentPlayer,
       "state" -> gameState,
       "players" -> Json.toJson(
-        for (player <- players.getAllPlayer) yield {
+        for (player <- players2.players) yield {
           Json.obj(
             "playerId" -> player.playerId,
             "name" -> player.getName(),
