@@ -12,9 +12,7 @@ import scala.io.StdIn.readLine
 // fuer einfache testfaelle
 
 object Game {
-  //TODO: neuer thread
-  // t1: player: a, b
-  // t2: player f, g
+
   val injector = Guice.createInjector(new MenschAergerDichNichtModule)
   val controller = injector.getInstance(classOf[ControllerInterface])
   val tui = controller.tui

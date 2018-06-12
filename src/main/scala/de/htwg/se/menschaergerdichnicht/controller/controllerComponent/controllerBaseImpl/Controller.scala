@@ -8,7 +8,7 @@ import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.GameState
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.PlayingInterface
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.Players
 import play.api.libs.json.{JsNull, JsNumber, JsValue, Json}
-import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.Slick.{PlayerSlick, PlayingFieldSlick, TokenSlick}
+import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.Slick.{playerQuery}
 
 import scala.collection.mutable.ArrayBuffer
 import scala.util._
@@ -34,29 +34,28 @@ case class Controller () extends ControllerInterface {
 
   def save(): Unit = {
     //TODO: häääää
-
-
-    players.players.map{p => (PlayerSlick.create(p), p.tokens.map(t => TokenSlick.create(t)))}
+    players.players.map{p => this.selectPlayer.PlayerSlick.create(p)}
+    playingField.playingField.map(f => this.selectField.PlayingFieldSlick.create(f))
+    this.tui.printTui()
   }
 
   def load(): Unit = {
-    //TODO: alte ids speichern bevor read
+    //read data from DB
+    val all_players = players.players.map{p => this.selectPlayer.PlayerSlick.read(p.playerId).get}
+    var num = 0
+    playingField.playingField.map(f => (this.selectField.PlayingFieldSlick.read(num), num += 1, println(num + "nummer")))
 
-    val old = players.players.flatMap(p => p.tokens)
-    val all_players = players.players.map{p => PlayerSlick.read(p.playerId).get}
-    //alte Tokens setzen
-    all_players.foreach(p => (p.tokens = ArrayBuffer(old.filter(_.getPlayer() == p).map(t => t) : _*)))
-    //Tokens aus DB laden und setzen
-    all_players.map(p => p.tokens.map(t => TokenSlick.read(t.tokenId)))
+    //delete old data from DB
+    players.players.foreach(p => this.selectPlayer.PlayerSlick.delete(p.playerId))
+    num = 0
+    playingField.playingField.map(f => (this.selectField.PlayingFieldSlick.delete(num), num += 1))
 
-    players.players.map{p => (p.tokens.foreach(t => TokenSlick.delete(t.tokenId)), PlayerSlick.delete(p.playerId))}
 
-    all_players.foreach(p => println("Name: " + p.getName() + ", diced: " + p.getDiced() + "Tokens:" ))
-    players.players.map{p => all_players.iterator}
 
-    println("test:" + players.players)
+    println(playingField.playingField.map(f => f.tokenId))
 
-    println(all_players.map(p => p.tokens.map(i => (i.tokenId, i.getPlayer().playerId))))
+    println(players.players.map(p => (p.playerId, p.tokens, p.getDiced(), p.tokens.map(t => t.tokenId))))
+    this.tui.printTui()
   }
 
   def chooseToken(tokenId: Int): Try[_] = undoManager.action(ChooseToken(tokenId, this))
