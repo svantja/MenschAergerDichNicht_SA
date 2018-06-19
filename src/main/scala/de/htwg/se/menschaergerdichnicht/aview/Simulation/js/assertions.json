@@ -1,0 +1,10 @@
+{
+  "simulation": "test.GameSimulation",
+  "simulationId": "gamesimulation",
+  "start": 1528810528131,
+  "description": "",
+  "scenarios": ["Add two Players and Start", "Add, Start, New Game, Save And Load", "Add one Player and start"],
+  "assertions": [
+
+  ]
+}

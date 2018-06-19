@@ -50,15 +50,14 @@ class playerQuery(controller: ControllerInterface){
 
     Await.result(db.run(setup), Duration.Inf)
 
-    var idDirty: Long = 0
+    var randomNum: Long = 0
 
     override def create(player: PlayerInterface): Long = {
-      Await.result(db.run(players += PlayerData(player.playerId, player.playerId, player.getName(), player.getDiced(), player.finished)), Duration.Inf)
-      Await.result(db.run(tokens ++= player.tokens.map(token => TokenData(token.tokenId, token.getPlayer().playerId, token.color.toString, token.position._2, token.counter))), Duration.Inf)
-      //creation of field here.. else error
-      println("test")
-
-      idDirty
+      Await.result(db.run(players += PlayerData(player.playerId, player.playerId, player.getName(), player.getDiced(),
+        player.finished)), Duration.Inf)
+      Await.result(db.run(tokens ++= player.tokens.map(token => TokenData(token.tokenId, token.getPlayer().playerId,
+        token.color.toString, token.position._2, token.counter))), Duration.Inf)
+      randomNum
     }
 
 
