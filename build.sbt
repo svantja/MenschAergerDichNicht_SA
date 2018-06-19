@@ -29,7 +29,7 @@ libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.5.11"
 
 libraryDependencies += "com.typesafe.akka" %% "akka-cluster" % "2.5.11"
 
-libraryDependencies += "com.typesafe.akka" % "akka-actor" % "2.0"
+//libraryDependencies += "com.typesafe.akka" % "akka-actor" % "2.0"
 
-libraryDependencies += "com.typesafe.akka" % "akka-remote" % "2.0"
+//libraryDependencies += "com.typesafe.akka" % "akka-remote" % "2.0"
 

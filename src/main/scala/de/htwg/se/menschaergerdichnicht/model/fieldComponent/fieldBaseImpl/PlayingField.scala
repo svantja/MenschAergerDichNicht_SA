@@ -42,8 +42,6 @@ case class PlayingField @Inject()() extends PlayingInterface {
     token.setCounter(token.getCounter() + num)
   }
 
-
-  //TODO: einzige Problem: was passiert wenn man sich selber kicken will?
   class KickActor(token: TokenInterface, tokenId: Int, player: PlayerInterface) extends Actor {
     def receive: PartialFunction[Any, Unit] = {
       case "player one" => {
@@ -100,15 +98,16 @@ case class PlayingField @Inject()() extends PlayingInterface {
     def receive: PartialFunction[Any, Unit] = {
       case "kick" => {
         val system = ActorSystem("KickTokenSystem")
-        p.getTokens().map(token =>
-          (if (token.tokenId == tokenId && token.getPlayer() != player) (system.actorOf(Props(new TokenActor(token, tokenId, player)), name = token.number.toString)) ! "kick"))
+        p.getTokens().foreach(token =>
+          if (token.tokenId == tokenId && token.getPlayer() != player)
+            system.actorOf(Props(new TokenActor(token, tokenId, player)), name = token.number.toString) ! "kick")
       }
     }
   }
 
   def kickToken(tokenId: Int, player: PlayerInterface, players: PlayersInterface): Boolean = {
     val system = ActorSystem("KickTokenSystem")
-    players.getAllPlayer.map(p => (system.actorOf(Props(new PlayerActor(p, tokenId, player)), name = p.getName())) ! "kick")
+    players.getAllPlayer.foreach(p => system.actorOf(Props(new PlayerActor(p, tokenId, player)), name = p.getName()) ! "kick")
     true
   }
 
