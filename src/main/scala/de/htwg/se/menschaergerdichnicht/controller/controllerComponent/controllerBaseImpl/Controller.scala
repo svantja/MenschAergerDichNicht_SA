@@ -6,9 +6,10 @@ import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.{Controll
 import de.htwg.se.menschaergerdichnicht.util.{Observable, UndoManager}
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.GameState._
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.PlayingInterface
-import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.Players
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.{Player, Players}
 import play.api.libs.json.{JsNull, JsNumber, JsValue, Json}
-import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.Slick.{playerQuery}
+import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.Slick.playerQuery
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.{PlayerInterface, PlayersInterface}
 
 import scala.collection.mutable.ArrayBuffer
 import scala.util._
@@ -89,6 +90,17 @@ case class Controller () extends ControllerInterface {
       )
 
     )
+  }
+
+  def fromType(json: JsValue): Players = {
+    val current = Json.fromJson[Int]((json \ "current").get).get
+    val players = Json.fromJson[Vector[PlayerInterface]]((json \ "players").get).get
+
+    this.players.players.map(p => players.map(pl => if(pl.playerId == p.playerId)
+      (p.setName(pl.getName()), p.setDiced(pl.getDiced()),
+        p.tokens.map(t => pl.tokens.map(nt => if(nt.tokenId == t.tokenId)
+          (t.setPosition(nt.getPosition()), t.setCounter(nt.getCounter())))))))
+    this.players
   }
 }
 

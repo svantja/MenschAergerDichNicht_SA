@@ -1,15 +1,16 @@
 package de.htwg.se.menschaergerdichnicht.model.playerComponent
 
-import de.htwg.se.menschaergerdichnicht.model.fieldComponent.{ FieldInterface, HouseInterface }
-import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.{ Field, House, TargetField }
-import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.{ Player, Players, Token }
+import de.htwg.se.menschaergerdichnicht.model.fieldComponent.{FieldInterface, HouseInterface}
+import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.{Field, House, TargetField}
+import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.ToFromJson
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.{Player, Players, Token}
 
 import scala.collection.mutable.ArrayBuffer
 
 /**
  * Created by Anastasia on 25.06.17.
  */
-trait PlayerInterface {
+trait PlayerInterface extends ToFromJson[PlayerInterface] {
   var playerId: Int
   val house: HouseInterface
   val target: TargetField
@@ -27,7 +28,7 @@ trait PlayerInterface {
   def getAvailableTokens(): ArrayBuffer[String]
 }
 
-trait PlayersInterface {
+trait PlayersInterface extends ToFromJson[PlayersInterface] {
   def removePlayer(): PlayersInterface
   def updateCurrentPlayer(player: PlayerInterface): PlayersInterface
   def nextPlayer(): PlayersInterface

@@ -7,6 +7,7 @@ import scala.util._
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.GameState._
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.PlayingInterface
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.PlayingField
+import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.MongoDB
 import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.Slick.{fieldQuery, playerQuery}
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.Players
 import de.htwg.se.menschaergerdichnicht.util.Observable
@@ -26,6 +27,7 @@ trait ControllerInterface extends Publisher {
   var tui = new Tui(this)
   var selectPlayer = new playerQuery(this)
   var selectField = new fieldQuery(this)
+  var mongoDB = new MongoDB("Mensch", this)
   def addPlayer(name: String): Try[_]
   def startGame(): Try[_]
   def chooseToken(tokenId: Int): Try[_]
@@ -34,6 +36,7 @@ trait ControllerInterface extends Publisher {
   def newGame(): Try[_]
   def save(): Unit
   def load(): Unit
+  def fromType(json: JsValue): Players
 }
 
 import scala.swing.event.Event

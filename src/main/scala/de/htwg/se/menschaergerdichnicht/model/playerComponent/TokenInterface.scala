@@ -1,11 +1,12 @@
 package de.htwg.se.menschaergerdichnicht.model.playerComponent
 
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.FieldInterface
+import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.ToFromJson
 
 /**
  * Created by Anastasia on 25.06.17.
  */
-trait TokenInterface {
+trait TokenInterface extends ToFromJson[TokenInterface] {
   var position: (FieldInterface, Int)
   var counter: Int
   var number: Int

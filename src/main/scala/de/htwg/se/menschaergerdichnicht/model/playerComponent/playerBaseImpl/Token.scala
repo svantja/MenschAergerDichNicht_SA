@@ -1,7 +1,8 @@
 package de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl
 
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.FieldInterface
-import de.htwg.se.menschaergerdichnicht.model.playerComponent.{ PlayerInterface, TokenInterface }
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.{PlayerInterface, TokenInterface}
+import play.api.libs.json.JsValue
 
 case class Token(var player: PlayerInterface, var position: (FieldInterface, Int), var counter: Int) extends TokenInterface {
 
@@ -33,6 +34,9 @@ case class Token(var player: PlayerInterface, var position: (FieldInterface, Int
 
   def getFinished(): Boolean = finished
 
+  override def toType = ???
+
+  override def fromType(input: JsValue) = ???
 }
 
 object Token {

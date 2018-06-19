@@ -40,3 +40,5 @@ libraryDependencies += "com.typesafe.slick" %% "slick" % "3.2.3"
 libraryDependencies += "com.typesafe.slick" %% "slick-hikaricp" % "3.2.3"
 
 libraryDependencies += "com.h2database" % "h2" % "1.4.197"
+
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "2.3.0"

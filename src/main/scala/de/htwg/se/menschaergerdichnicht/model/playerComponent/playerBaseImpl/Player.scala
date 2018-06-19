@@ -103,4 +103,7 @@ case class Players(var currentPlayer: Int = 0, players: Vector[Player] = Vector(
     nameList
   }
 
+  override def toType = ???
+
+  override def fromType(input: JsValue) = ???
 }
