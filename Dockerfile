@@ -1,5 +1,5 @@
 FROM hseeberger/scala-sbt:8u151-2.12.4-1.1.1
-LABEL desctiption = "The Game 7Steps packed into docker"
+LABEL desctiption = "Mensch Aerger Dich Nicht packed into docker"
 
 RUN apt-get -y install fish vim
 RUN git clone https://github.com/svantja/MenschAergerDichNicht_SA.git
