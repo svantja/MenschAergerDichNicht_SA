@@ -34,4 +34,10 @@ case class ControllerMock() extends ControllerInterface {
   override def save(): Unit = ???
 
   override def load(): Unit = ???
+
+  override def fromType(json: JsValue): Players = ???
+
+  override def saveMongo(): Unit = ???
+
+  override def loadMongo(): Unit = ???
 }

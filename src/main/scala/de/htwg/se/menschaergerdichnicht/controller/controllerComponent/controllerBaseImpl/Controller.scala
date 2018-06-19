@@ -2,14 +2,15 @@ package de.htwg.se.menschaergerdichnicht.controller.controllerComponent.controll
 
 import com.google.inject.{Guice, Inject}
 import de.htwg.se.menschaergerdichnicht.MenschAergerDichNichtModule
-import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.{ControllerInterface, PlayersChanged}
+import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.{ControllerInterface, GameState, PlayersChanged}
 import de.htwg.se.menschaergerdichnicht.util.{Observable, UndoManager}
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.GameState._
 import de.htwg.se.menschaergerdichnicht.model.fieldComponent.PlayingInterface
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.{Player, Players}
-import play.api.libs.json.{JsNull, JsNumber, JsValue, Json}
+import play.api.libs.json._
 import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.Slick.playerQuery
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.{PlayerInterface, PlayersInterface}
+import play.api.libs.json
 
 import scala.collection.mutable.ArrayBuffer
 import scala.util._
@@ -59,14 +60,19 @@ case class Controller () extends ControllerInterface {
     this.tui.printTui()
   }
 
+  def saveMongo(): Unit = {
+    this.mongoDB.create(this.players)
+  }
+
+  def loadMongo(): Unit = {
+    this.mongoDB.read(1)
+  }
+
   def chooseToken(tokenId: Int): Try[_] = undoManager.action(ChooseToken(tokenId, this))
 
   override def gameStatus: GameState = ???
 
   def toJson: JsValue = {
-    for (player <- players.players) {
-      println(player.getName(), player.getDiced())
-    }
     Json.obj(
       "current" -> players.currentPlayer,
       "state" -> gameState,
@@ -92,14 +98,23 @@ case class Controller () extends ControllerInterface {
     )
   }
 
-  def fromType(json: JsValue): Players = {
-    val current = Json.fromJson[Int]((json \ "current").get).get
-    val players = Json.fromJson[Vector[PlayerInterface]]((json \ "players").get).get
+  def fromType(jsval: JsValue): Players = {
+    players.currentPlayer = Json.fromJson[Int]((jsval \ "current").get).get.toString.toInt
 
-    this.players.players.map(p => players.map(pl => if(pl.playerId == p.playerId)
-      (p.setName(pl.getName()), p.setDiced(pl.getDiced()),
-        p.tokens.map(t => pl.tokens.map(nt => if(nt.tokenId == t.tokenId)
-          (t.setPosition(nt.getPosition()), t.setCounter(nt.getCounter())))))))
+    var num = 0
+    for(p <- players.players){
+      p.setName(Json.fromJson[String](((jsval \ "players")(0)\"name").get).get)
+      p.setDiced(Json.fromJson[Int](((jsval \ "players")(0)\"diced").get).get)
+      var n = 0
+      for(t <- p.tokens){
+        t.setCounter(Json.fromJson[Int]((((jsval \ "players")(num)\"token")(n)\"count").get).get)
+        var pos = Json.fromJson[Int]((((jsval \ "players")(num)\"token")(n)\"position").get).get
+        playingField.playingField(t.position._2).tokenId = -1
+        t.setPosition((playingField.playingField(pos), pos))
+        n += 1
+      }
+      num += 1
+    }
     this.players
   }
 }

@@ -64,6 +64,9 @@ case class Player(var name: String, var diced: Int) extends PlayerInterface {
 
   override def toString: String = name
 
+  override def toType: JsValue = ???
+
+  override def fromType(input: JsValue): PlayerInterface = ???
 }
 
 object Player {
@@ -99,7 +102,7 @@ case class Players(var currentPlayer: Int = 0, players: Vector[Player] = Vector(
 
   override def toString: String = {
     var nameList = ""
-    players.map(player => if(player == players(currentPlayer)) nameList += "Current > " + player.toString() + "\n" else nameList += "  " + player.toString() + "\n")
+    players.map(player => if(player == players(currentPlayer)) nameList += player.toString() + "\n" else nameList +=  player.toString() + "\n")
     nameList
   }
 

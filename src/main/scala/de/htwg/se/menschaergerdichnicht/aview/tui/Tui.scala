@@ -47,6 +47,8 @@ class Tui(controller: ControllerInterface) extends Observer with LazyLogging {
       case "new" => controller.newGame()
       case "save" => controller.save()
       case "load" => controller.load()
+      case "save mongo" => controller.saveMongo()
+      case "load mongo" => controller.loadMongo()
       case _ => processMoreParameters(input)
     }
     continue

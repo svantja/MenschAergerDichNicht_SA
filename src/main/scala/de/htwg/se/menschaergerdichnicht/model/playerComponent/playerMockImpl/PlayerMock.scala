@@ -1,8 +1,9 @@
 package de.htwg.se.menschaergerdichnicht.model.playerComponent.playerMockImpl
 
-import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.{ Field, House, TargetField }
-import de.htwg.se.menschaergerdichnicht.model.playerComponent.{ PlayerInterface, PlayersInterface, TokenInterface }
-import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.{ Player, Players, Token }
+import de.htwg.se.menschaergerdichnicht.model.fieldComponent.fieldBaseImpl.{Field, House, TargetField}
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.{PlayerInterface, PlayersInterface, TokenInterface}
+import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.{Player, Players, Token}
+import play.api.libs.json.JsValue
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -25,6 +26,10 @@ case class PlayerMock() extends PlayerInterface {
   def addTokens(): ArrayBuffer[TokenInterface] = ArrayBuffer()
   def getTokenById(tokenId: Int): Option[Token] = Option(Token(Player("Birgit", 3), (Field(), 1), 1))
   def getAvailableTokens(): ArrayBuffer[String] = ArrayBuffer()
+
+  override def toType: JsValue = ???
+
+  override def fromType(input: JsValue): PlayerInterface = ???
 }
 
 case class PlayersMock() extends PlayersInterface {
@@ -34,4 +39,8 @@ case class PlayersMock() extends PlayersInterface {
   def nextPlayer(): PlayersInterface = this
   def getCurrentPlayer: PlayerInterface = Player("Birgit", 3)
   def getAllPlayer: Vector[PlayerInterface] = Vector()
+
+  override def toType: JsValue = ???
+
+  override def fromType(input: JsValue): PlayersInterface = ???
 }

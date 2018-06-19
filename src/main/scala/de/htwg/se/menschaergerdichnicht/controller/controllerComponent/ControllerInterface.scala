@@ -27,7 +27,7 @@ trait ControllerInterface extends Publisher {
   var tui = new Tui(this)
   var selectPlayer = new playerQuery(this)
   var selectField = new fieldQuery(this)
-  var mongoDB = new MongoDB("Mensch", this)
+  var mongoDB = new MongoDB("menschh", this)
   def addPlayer(name: String): Try[_]
   def startGame(): Try[_]
   def chooseToken(tokenId: Int): Try[_]
@@ -36,6 +36,8 @@ trait ControllerInterface extends Publisher {
   def newGame(): Try[_]
   def save(): Unit
   def load(): Unit
+  def saveMongo(): Unit
+  def loadMongo(): Unit
   def fromType(json: JsValue): Players
 }
 

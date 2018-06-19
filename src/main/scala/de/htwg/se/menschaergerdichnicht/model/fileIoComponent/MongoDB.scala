@@ -11,7 +11,7 @@ import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.GameState
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.PlayersInterface
 import de.htwg.se.menschaergerdichnicht.model.playerComponent.playerBaseImpl.{Player, Players}
 import de.htwg.se.menschaergerdichnicht.controller.controllerComponent.controllerBaseImpl.Controller
-import org.bson.BsonDocument
+
 import org.mongodb.scala.bson.BsonDocument
 import play.api.libs.json.{JsValue, Json}
 import de.htwg.se.menschaergerdichnicht.model.fileIoComponent.ToFromString
@@ -20,12 +20,13 @@ import scala.util.{Failure, Success, Try}
 
 case class MongoDB(collectionName: String, c: ControllerInterface) extends Dao[PlayersInterface, Long] {
 
-  def this() = this("players")
+
   val mongoClient: MongoClient = MongoClient()
   val database: MongoDatabase = mongoClient.getDatabase("mensch")
   val collection: MongoCollection[Document] = database.getCollection(collectionName)
+  collection.drop().results()
   var count = try {
-    val result: Document = collection.find().sort(BsonDocument("_id:-1")).limit(1).headResult()
+    val result: Document = collection.find().sort(BsonDocument("{_id:-1}")).limit(1).headResult()
     val json = (Json.parse(result.toJson()) \ "_id").get
     json.toString().toInt
   } catch {
@@ -35,14 +36,14 @@ case class MongoDB(collectionName: String, c: ControllerInterface) extends Dao[P
 
   override def create(data: PlayersInterface): Long = {
     count += 1
-    collection.insertOne(Document("_id" -> count, "players" -> BsonDocument(data.toString())))
+    var t = collection.insertOne(Document(BsonDocument(c.toJson.toString()))).results()
     count.toLong
   }
 
   override def read(id: Long): Try[PlayersInterface] = {
     try {
-      val result: Document = collection.find(equal("_id", id.toInt)).first().headResult()
-      val json = (Json.parse(result.toJson()) \ "players").get
+      val result: Document = collection.find().first().headResult()
+      val json = Json.parse(result.toJson())
       Success(c.fromType(json))
     }
   }
@@ -50,11 +51,6 @@ case class MongoDB(collectionName: String, c: ControllerInterface) extends Dao[P
   override def delete(id: Long): Unit = {
     collection.deleteOne(equal("_id", id.toInt)).results()
   }
-
-//  override def iterIds: Iterable[Long] = {
-//    val results: Seq[Document] = collection.find().results()
-//    results.map(doc => (Json.parse(doc.toJson()) \ "_id").get.toString().toLong).toVector
-//  }
 
 }
 
